@@ -1,0 +1,85 @@
+.space-chat{
+    display: flex;
+    height: 100vh;
+    &__videochat-container {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        background-color: slateblue;
+
+    }
+    &__videos-placeholder {
+        background-color: rgb(37, 37, 37);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__mssgchat-container {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        background-color: rgb(25, 25, 26);
+
+    }
+
+    &__header {
+        padding: 10px 0px 12px 0px;
+        color: white;
+        text-align: center;
+    }
+
+    &__window {
+        flex-grow: 1;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__input-container {
+        padding: 22px 12px;
+        display: flex;
+
+    }
+    &__controls {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        padding: 10px;
+        justify-content: space-between;
+        background-color: slateblue;
+    
+        button {
+            color: white;
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+            span {
+                display: block;
+            }
+        }
+    
+    }
+
+    .message {
+        list-style-type: none;
+        background-color: slateblue;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        max-width: 80%;
+        margin-bottom: 10px;
+    }
+
+    input {
+        background-color: transparent;
+        border: 2px solid slateblue;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        padding: 10px;
+        width: 100%;
+    }
+}

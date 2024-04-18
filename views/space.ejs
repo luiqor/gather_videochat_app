@@ -3,9 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/main.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Document</title>
 </head>
 <body>
-    <h1>Welcome to the space page</h1>
+    <section class="space-chat">
+			<div class="space-chat__videochat-container">
+				<div class="space-chat__videos-placeholder">
+					<div id="video-grid"></div>
+				</div>
+				<div class="space-chat__controls">
+                    <div class="space-chat__controls-block">
+						<button class="space-chat__button">
+							<i class="material-icons">radio_button_unchecked</i>
+							<span>Record</span>
+						</button>
+					</div>
+					<div class="space-chat__controls-block">
+						<button class="space-chat__button">
+							<i class="material-icons">mic</i>
+							<span>Mute</span>
+						</button>
+						<button class="space-chat__button">
+							<i class="material-icons">videocam</i>
+							<span>Stop video</span>
+						</button>
+						<button class="space-chat__button">
+							<i class="material-icons">present_to_all</i>
+							<span>Present</span>
+						</button>
+					</div>
+                    <div class="space-chat__controls-block">
+						<button class="space-chat__button">
+							<i class="material-icons">logout</i>
+							<span>Leave meeting</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="space-chat__mssgchat-container">
+				<div class="space-chat__header">
+					<h3>Chat</h3>
+				</div>
+				<div class="space-chat__window">
+					<ul class="messages"></ul>
+				</div>
+				<div class="space-chat__input-container">
+					<input type="text" id="message-input" placeholder="message...">
+				</div>
+			</div>
+		</section>
 </body>
 </html>
