@@ -1,5 +1,6 @@
 import { addVideoStream, getUserMediaStream }from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
+import { scrollToBottom } from "./spaceHelpers.js";
 const socket = io();
 const myVideo = document.createElement("video");
 const SPACE_ID = "<%= spaceId %>";
@@ -35,6 +36,21 @@ getUserMediaStream()
   socket.on("user-connected", (userId) => {
     //when a new user/participant connects
     connectToNewUser(userId, stream, peers, peer);
+  });
+
+  let inputMssg = $("input");
+  $("html").keydown((e) => {
+    if (e.which == 13 && inputMssg.val().length !== 0) {
+      console.log(inputMssg.val());
+      socket.emit("message", inputMssg.val());
+      inputMssg.val("");
+    }
+  });
+
+  socket.on("createMessage", (message, userId) => {
+    console.log("this is coming from server:  " + message);
+    $("ul").append(`<li class="message">${userId}<br/><br/>${message}</li>`);
+    scrollToBottom();
   });
 });
 

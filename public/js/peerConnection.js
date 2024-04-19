@@ -1,3 +1,5 @@
+import { addVideoStream } from "./mediaStream.js";
+
 export const connectToNewUser = (userId, stream, peers, peer) => {
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
