@@ -1,14 +1,19 @@
 import express from "express";
 import { space } from "../controller/gatherspaceController.js";
+import { index } from "../controller/mainController.js";
 
 const route = express.Router();
 
-route.get("/", space);
+route.get("/", index);
 
-route.all("/*", function (req, res) {
+route.get("/:space", space);
+
+route.all("/*", (req, res) => {
   res
     .status(400)
     .send({ status: false, message: "The page you request is not available" });
 });
 
 export default route;
+
+// route.get("/", space);

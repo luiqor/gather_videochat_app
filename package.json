@@ -16,6 +16,7 @@
     "nodemon": "^3.1.0",
     "peer": "^1.0.2",
     "peerjs": "^1.0.2",
+    "random-word-slugs": "^0.1.7",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"
   }
