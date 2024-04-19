@@ -5,6 +5,7 @@ import route from "./routes/route.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import ejs from "ejs";
+import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
 
@@ -13,14 +14,9 @@ const __dirname = dirname(__filename);
 
 dotenv.config();
 const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "*", 
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server);
 const peerServer = ExpressPeerServer(server, { debug: true });
 
 app.use(express.static(path.join(__dirname, "../public")));
@@ -37,17 +33,17 @@ app.use("/", route);
 io.on("connection", (socket) => {
   socket.on("join-space", (spaceId, userId) => {
     socket.join(spaceId);
-    socket.to(spaceId).broadcast.emit("user-connected", userId);
+    io.to(spaceId).emit("user-connected", userId);
 
     socket.on("message", (message) => {
       io.to(spaceId).emit("createMessage", message, userId);
     });
+
     socket.on("disconnect", () => {
-      socket.to(spaceId).broadcast.emit("user-disconnected", userId);
+      io.to(spaceId).broadcast.emit("user-disconnected", userId);
     });
   });
 });
-
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}/`);

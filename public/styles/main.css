@@ -73,15 +73,12 @@
 }
 
 #video-grid {
-  display: flex;
   justify-content: center;
   height: 92vh;
 }
 #video-grid video {
   height: 300px;
   width: 300px;
-  -o-object-fit: cover;
-     object-fit: cover;
 }
 
 body {
