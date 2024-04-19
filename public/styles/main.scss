@@ -2,15 +2,23 @@
 @import "./components/videogrid.scss";
 @import "./variables.scss";
 
-body{
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, Roboto;
-    background-color: $backgroundGrey;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, Roboto;
+  background-color: $backgroundGrey;
 }
 
 button {
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.disabled-button-element {
+  color: $notAllowedColor;
+}
+
+.hidden {
+  display: none;
 }

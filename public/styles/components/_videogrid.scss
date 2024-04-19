@@ -1,9 +1,10 @@
 #video-grid {
-    justify-content: center;
-    height: 92vh;
-
-    video {
-        height: 300px;
-        width: 300px;
-    }
+  justify-content: center;
+  height: 92vh;
+  .video-holder {
+    background-color: slateblue;
+  }
+  video {
+    width: 300px;
+  }
 }

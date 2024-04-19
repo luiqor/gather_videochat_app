@@ -76,8 +76,10 @@
   justify-content: center;
   height: 92vh;
 }
+#video-grid .video-holder {
+  background-color: slateblue;
+}
 #video-grid video {
-  height: 300px;
   width: 300px;
 }
 
@@ -92,4 +94,12 @@ button {
   cursor: pointer;
   border: none;
   background-color: transparent;
+}
+
+.disabled-button-element {
+  color: tomato;
+}
+
+.hidden {
+  display: none;
 }/*# sourceMappingURL=main.css.map */

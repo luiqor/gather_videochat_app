@@ -1,6 +1,7 @@
-import { addVideoStream, getUserMediaStream }from "./mediaStream.js";
+import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
 import { scrollToBottom } from "./spaceHelpers.js";
+import { muteMic, stopVideo } from "./spaceButtons.js";
 const socket = io();
 const myVideo = document.createElement("video");
 const SPACE_ID = "<%= spaceId %>";
@@ -19,8 +20,7 @@ let getUserMedia =
   navigator.mozGetUserMedia;
 
 //VIDEO AND AUDIO TOGGLING OPTIONS
-getUserMediaStream()
-.then((stream) => {
+getUserMediaStream().then((stream) => {
   myVideoStream = stream;
   addVideoStream(myVideo, stream);
 
@@ -41,7 +41,6 @@ getUserMediaStream()
   let inputMssg = $("input");
   $("html").keydown((e) => {
     if (e.which == 13 && inputMssg.val().length !== 0) {
-      console.log(inputMssg.val());
       socket.emit("message", inputMssg.val());
       inputMssg.val("");
     }
@@ -63,16 +62,20 @@ peer.on("open", (id) => {
   socket.emit("join-space", SPACE_ID, id);
 });
 
-peer.on("call", (call) =>{
+peer.on("call", (call) => {
   //VIDEO RENDERING FOR MULTIPLE PARTICIPANTS
-  getUserMedia(
-    { video: true, audio: true },
-    (stream) => {
-      call.answer(stream); // Answers the call with an A/V stream.
-      const video = document.createElement("video");
-      call.on("stream", function (remoteStream) {
-        addVideoStream(video, remoteStream);
-      });
-    }
-  );
+  getUserMedia({ video: true, audio: true }, (stream) => {
+    call.answer(stream); // Answers the call with an A/V stream.
+    const video = document.createElement("video");
+    call.on("stream", function (remoteStream) {
+      addVideoStream(video, remoteStream);
+    });
+  });
 });
+
+document
+  .getElementById("mute-button")
+  .addEventListener("click", () => muteMic(myVideoStream));
+document
+  .getElementById("video-button")
+  .addEventListener("click", () => stopVideo(myVideoStream));
