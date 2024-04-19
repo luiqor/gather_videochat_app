@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-      io.to(spaceId).broadcast.emit("user-disconnected", userId);
+      io.to(spaceId).emit("user-disconnected", userId);
     });
   });
 });
