@@ -4,7 +4,6 @@ import { scrollToBottom } from "./spaceHelpers.js";
 import { muteMic, stopVideo } from "./spaceButtons.js";
 const socket = io();
 const myVideo = document.createElement("video");
-const SPACE_ID = "<%= spaceId %>";
 
 myVideo.muted = true;
 let peer = new Peer(undefined, {
@@ -33,33 +32,43 @@ getUserMediaStream().then((stream) => {
     });
   });
 
-  socket.on("user-connected", (userId) => {
+  socket.on("user-connected", (username) => {
     //when a new user/participant connects
-    connectToNewUser(userId, stream, peers, peer);
+    connectToNewUser(username, stream, peers, peer);
   });
 
   let inputMssg = $("input");
   $("html").keydown((e) => {
     if (e.which == 13 && inputMssg.val().length !== 0) {
-      socket.emit("message", inputMssg.val());
+      console.log("Sending message with SPACE_ID:", SPACE_ID); // Log SPACE_ID
+      socket.emit("message", inputMssg.val(), SPACE_ID); // Send SPACE_ID along with the message
       inputMssg.val("");
     }
   });
 
-  socket.on("createMessage", (message, userId) => {
-    console.log("this is coming from server:  " + message);
-    $("ul").append(`<li class="message">${userId}<br/><br/>${message}</li>`);
-    scrollToBottom();
+  socket.on("create-message", (message, username, messageSpaceId) => {
+    if (messageSpaceId === SPACE_ID) {
+      // Check if messageSpaceId matches SPACE_ID
+      $("ul").append(
+        `<li class="message">${username}<br/><br/>${message}</li>`
+      );
+      scrollToBottom();
+    }
   });
 });
 
-socket.on("user-disconnected", (userId) => {
-  if (peers[userId]) peers[userId].close();
+socket.on("connect", () => {
+  let username = prompt("Enter name: ");
+  socket.emit("initialize-user", username, SPACE_ID);
 });
 
-peer.on("open", (id) => {
+socket.on("user-disconnected", (username) => {
+  if (peers[username]) peers[username].close();
+});
+
+peer.on("open", (username) => {
   //RENDERING CONCRETE SPACE ID
-  socket.emit("join-space", SPACE_ID, id);
+  socket.emit("update-spaces", username, SPACE_ID);
 });
 
 peer.on("call", (call) => {

@@ -1,16 +1,11 @@
-export const muteMic = (myVideoStream) => {
-  if (!myVideoStream || !myVideoStream.getAudioTracks().length) {
-    console.error("No audio tracks available");
-    return;
-  }
-
-  const enabled = myVideoStream.getAudioTracks()[0].enabled;
+export const muteMic = (stream) => {
+  let enabled = stream.getAudioTracks()[0].enabled;
   if (enabled) {
-    myVideoStream.getAudioTracks()[0].enabled = false;
+    stream.getAudioTracks()[0].enabled = false;
     setUnmuteButton();
   } else {
     setMuteButton();
-    myVideoStream.getAudioTracks()[0].enabled = true;
+    stream.getAudioTracks()[0].enabled = true;
   }
 };
 
@@ -24,14 +19,14 @@ const setMuteButton = () => {
   $("#mute-button").html(html);
 };
 
-export const stopVideo = (myVideoStream) => {
-  let enabled = myVideoStream.getVideoTracks()[0].enabled;
+export const stopVideo = (stream) => {
+  let enabled = stream.getVideoTracks()[0].enabled;
   if (enabled) {
-    myVideoStream.getVideoTracks()[0].enabled = false;
+    stream.getVideoTracks()[0].enabled = false;
     setPlayVideo();
   } else {
     setStopVideo();
-    myVideoStream.getVideoTracks()[0].enabled = true;
+    stream.getVideoTracks()[0].enabled = true;
   }
 };
 

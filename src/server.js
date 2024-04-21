@@ -1,10 +1,8 @@
 import express from "express";
-import http from "http";
 import dotenv from "dotenv";
 import route from "./routes/route.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
-import ejs from "ejs";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
@@ -30,17 +28,40 @@ app.set("view engine", "ejs");
 
 app.use("/", route);
 
-io.on("connection", (socket) => {
-  socket.on("join-space", (spaceId, userId) => {
-    socket.join(spaceId);
-    io.to(spaceId).emit("user-connected", userId);
+let spaces = [
+  //{ name: "global", creator: "User1" },..
+];
+let users = {};
 
-    socket.on("message", (message) => {
-      io.to(spaceId).emit("createMessage", message, userId);
-    });
+io.on("connection", (socket) => {
+  console.log(`User connected to server.`);
+
+  socket.on("initialize-user", (username) => {
+    socket.username = username;
+    console.log(`User ${username} initialized with socket id ${socket.id}.`);
+  });
+
+  socket.on("message", (message, spaceId) => {
+    console.log("Received message with SPACE_ID:", spaceId);
+    io.to(spaceId).emit("create-message", message, socket.username, spaceId);
+  });
+
+  socket.on("update-spaces", (username, spaceId) => {
+    if (!spaces.some((space) => space.name === spaceId)) {
+      spaces.push({ name: spaceId, creator: username });
+    }
+    users[socket.id] = { username, space: spaceId };
+
+    if (socket.currentRoom) socket.leave(socket.currentRoom);
+
+    socket.join(spaceId);
+    socket.currentSpace = spaceId;
+
+    io.to(spaceId).emit("user-connected", username);
 
     socket.on("disconnect", () => {
-      io.to(spaceId).emit("user-disconnected", userId);
+      io.to(socket.currentSpace).emit("user-disconnected", username);
+      delete users[socket.id];
     });
   });
 });
