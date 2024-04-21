@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
+import * as typeorm from "typeorm";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +28,19 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use("/", route);
+
+typeorm
+  .createConnection({
+    type: process.env.DB_TYPE,
+    database: process.env.DATABASE,
+    synchronize: true,
+    logging: true,
+    entities: [__dirname + "/entity/*.js"],
+  })
+  .then(() => {
+    console.log("Database connected successfully.");
+  })
+  .catch((error) => console.log(error));
 
 let spaces = [
   //{ name: "global", creator: "User1" },..
