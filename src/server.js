@@ -31,7 +31,9 @@ app.use("/", route);
 let spaces = [
   //{ name: "global", creator: "User1" },..
 ];
-let users = {};
+let users = {
+  //"socketId1": { "username": "user1", "space": "spaceId1" },..
+};
 
 io.on("connection", (socket) => {
   console.log(`User connected to server.`);
