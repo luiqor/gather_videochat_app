@@ -13,15 +13,17 @@ export default new EntitySchema({
       generated: true,
     },
     username: {
-      type: "text",
+      type: "varchar",
     },
   },
   relations: {
     spaces: {
+      type: "many-to-one",
       target: "Space",
-      type: "one-to-many",
-      joinTable: true,
-      cascade: true,
+      joinColumn: {
+        name: "space_slug",
+      },
+      inverseSide: "spaces_creators",
     },
   },
 });

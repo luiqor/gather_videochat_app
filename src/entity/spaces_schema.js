@@ -9,18 +9,26 @@ export default new EntitySchema({
   columns: {
     slug: {
       primary: true,
-      type: "text",
+      type: "varchar",
     },
     username: {
-      type: "text",
+      type: "varchar",
     },
   },
   relations: {
     sockets: {
+      type: "many-to-one",
       target: "Socket",
+      joinColumn: {
+        name: "socket_id",
+      },
+      inverseSide: "spaces",
+    },
+    spaces_creators: {
       type: "one-to-many",
-      joinTable: true,
+      target: "SpaceCreator",
       cascade: true,
+      inverseSide: "spaces",
     },
   },
 });

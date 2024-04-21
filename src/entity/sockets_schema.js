@@ -8,7 +8,15 @@ export default new EntitySchema({
   columns: {
     socketId: {
       primary: true,
-      type: "text",
+      type: "varchar",
+    },
+  },
+  relations: {
+    spaces: {
+      type: "one-to-many",
+      target: "Space",
+      cascade: true,
+      inverseSide: "sockets",
     },
   },
 });
