@@ -10,6 +10,7 @@ import * as typeorm from "typeorm";
 import Socket from "./model/socket.js";
 import Space from "./model/space.js";
 import SocketSpace from "./model/socket_space.js";
+import SocketService from "./services/socket_service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,6 +32,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use("/", route);
+const socketServiceInstance = new SocketService();
 
 typeorm
   .createConnection({
@@ -43,93 +45,19 @@ typeorm
   })
   .then(async (connection) => {
     console.log("Database connected successfully.");
+    const socketRepository = connection.getRepository(Socket);
     const spaceRepository = connection.getRepository(Space);
     const socketSpaceRepository = connection.getRepository(SocketSpace);
 
     io.on("connection", async (socket) => {
-      console.log(`User connected to server.`);
-
-      let new_socket = new Socket();
-      new_socket.socketId = socket.id;
-      await connection.manager.save(new_socket);
-
-      socket.on("initialize-user", (username) => {
-        socket.username = username;
-        console.log(
-          `User ${username} initialized with socket id ${socket.id}.`
-        );
-      });
-
-      socket.on("message", (message, spaceId) => {
-        console.log("Received message with SPACE_ID:", spaceId);
-        io.to(spaceId).emit(
-          "create-message",
-          message,
-          socket.username,
-          spaceId
-        );
-      });
-
-      socket.on("update-spaces", async (peerId, spaceId) => {
-        let space = await spaceRepository.findOne({ where: { slug: spaceId } });
-        console.log("Space:", space);
-        if (!space) {
-          space = new Space();
-          space.slug = spaceId;
-          console.log("username:", socket.username);
-          space.creator_username = socket.username;
-          await spaceRepository
-            .save(space)
-            .then(() => {
-              console.log("Space saved.");
-              return space;
-            })
-            .catch((error) => {
-              throw error;
-            });
-        }
-
-        let socketSpace = new SocketSpace();
-        socketSpace.username = socket.username;
-        socketSpace.socket = new_socket;
-        socketSpace.space = space;
-        await socketSpaceRepository
-          .save(socketSpace)
-          .then(() => {
-            console.log("sockets_spaces saved.");
-          })
-          .catch((error) => {
-            throw error;
-          });
-        //⭕ leave the current room and join the new one
-        if (socket.currentRoom) socket.leave(socket.currentRoom);
-
-        socket.join(spaceId);
-        socket.currentSpace = spaceId;
-
-        io.to(spaceId).emit("user-connected", peerId);
-
-        socket.on("disconnect", () => {
-          io.to(socket.currentSpace).emit("user-disconnected", peerId);
-          console.log("User disconnected.", socket.username, "peerId:", peerId);
-          socketSpaceRepository
-            .find({
-              where: {
-                username: socket.username,
-              },
-            })
-            .then((SocketSpace) => {
-              socketSpaceRepository
-                .remove(SocketSpace)
-                .then(() => {
-                  console.log("Socket_space removed.");
-                })
-                .catch((error) => {
-                  throw error;
-                });
-            });
-        });
-      });
+      await socketServiceInstance.handleConnection(
+        connection,
+        socket,
+        socketRepository,
+        spaceRepository,
+        socketSpaceRepository,
+        io
+      );
     });
   })
   .catch((error) => {
