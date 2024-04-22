@@ -1,6 +1,6 @@
 import { EntitySchema } from "typeorm";
-import Socket from "../model/socket.js";
 import Space from "../model/space.js";
+import SocketSpace from "../model/socket_space.js";
 
 export default new EntitySchema({
   name: "Space",
@@ -11,24 +11,17 @@ export default new EntitySchema({
       primary: true,
       type: "varchar",
     },
-    username: {
+    creator_username: {
       type: "varchar",
     },
   },
   relations: {
-    sockets: {
-      type: "many-to-one",
-      target: "Socket",
-      joinColumn: {
-        name: "socket_id",
-      },
-      inverseSide: "spaces",
-    },
-    spaces_creators: {
+    sockets_spaces: {
       type: "one-to-many",
-      target: "SpaceCreator",
+      target: "SocketSpace",
       cascade: true,
-      inverseSide: "spaces",
+      inverseSide: "space",
+      joinColumn: true,
     },
   },
 });

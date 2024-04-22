@@ -1,5 +1,6 @@
 import { EntitySchema } from "typeorm";
 import Socket from "../model/socket.js";
+import SocketSpace from "../model/socket_space.js";
 
 export default new EntitySchema({
   name: "Socket",
@@ -12,11 +13,12 @@ export default new EntitySchema({
     },
   },
   relations: {
-    spaces: {
+    sockets_spaces: {
       type: "one-to-many",
-      target: "Space",
+      target: "SocketSpace",
       cascade: true,
-      inverseSide: "sockets",
+      inverseSide: "socket",
+      joinColumn: true,
     },
   },
 });

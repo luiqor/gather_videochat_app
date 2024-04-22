@@ -7,6 +7,9 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
 import * as typeorm from "typeorm";
+import Socket from "./model/socket.js";
+import Space from "./model/space.js";
+import SocketSpace from "./model/socket_space.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -35,52 +38,103 @@ typeorm
     database: process.env.DATABASE,
     synchronize: true,
     logging: true,
+    foreignKeys: true,
     entities: [__dirname + "/entity/*.js"],
   })
-  .then(() => {
+  .then(async (connection) => {
     console.log("Database connected successfully.");
-  })
-  .catch((error) => console.log(error));
+    const spaceRepository = connection.getRepository(Space);
+    const socketSpaceRepository = connection.getRepository(SocketSpace);
 
-let spaces = [
-  //{ name: "global", creator: "User1" },..
-];
-let users = {
-  //"socketId1": { "username": "user1", "space": "spaceId1" },..
-};
+    io.on("connection", async (socket) => {
+      console.log(`User connected to server.`);
 
-io.on("connection", (socket) => {
-  console.log(`User connected to server.`);
+      let new_socket = new Socket();
+      new_socket.socketId = socket.id;
+      await connection.manager.save(new_socket);
 
-  socket.on("initialize-user", (username) => {
-    socket.username = username;
-    console.log(`User ${username} initialized with socket id ${socket.id}.`);
-  });
+      socket.on("initialize-user", (username) => {
+        socket.username = username;
+        console.log(
+          `User ${username} initialized with socket id ${socket.id}.`
+        );
+      });
 
-  socket.on("message", (message, spaceId) => {
-    console.log("Received message with SPACE_ID:", spaceId);
-    io.to(spaceId).emit("create-message", message, socket.username, spaceId);
-  });
+      socket.on("message", (message, spaceId) => {
+        console.log("Received message with SPACE_ID:", spaceId);
+        io.to(spaceId).emit(
+          "create-message",
+          message,
+          socket.username,
+          spaceId
+        );
+      });
 
-  socket.on("update-spaces", (username, spaceId) => {
-    if (!spaces.some((space) => space.name === spaceId)) {
-      spaces.push({ name: spaceId, creator: username });
-    }
-    users[socket.id] = { username, space: spaceId };
+      socket.on("update-spaces", async (spaceId) => {
+        let space = await spaceRepository.findOne({ where: { slug: spaceId } });
+        console.log("Space:", space);
+        if (!space) {
+          space = new Space();
+          space.slug = spaceId;
+          console.log("username:", socket.username);
+          space.creator_username = socket.username;
+          await spaceRepository
+            .save(space)
+            .then(() => {
+              console.log("Space saved.");
+              return space;
+            })
+            .catch((error) => {
+              throw error;
+            });
+        }
 
-    if (socket.currentRoom) socket.leave(socket.currentRoom);
+        let socketSpace = new SocketSpace();
+        socketSpace.username = socket.username;
+        socketSpace.socket = new_socket;
+        socketSpace.space = space;
+        await socketSpaceRepository
+          .save(socketSpace)
+          .then(() => {
+            console.log("sockets_spaces saved.");
+          })
+          .catch((error) => {
+            throw error;
+          });
+        //⭕ leave the current room and join the new one
+        if (socket.currentRoom) socket.leave(socket.currentRoom);
 
-    socket.join(spaceId);
-    socket.currentSpace = spaceId;
+        socket.join(spaceId);
+        socket.currentSpace = spaceId;
 
-    io.to(spaceId).emit("user-connected", username);
+        io.to(spaceId).emit("user-connected", socket.username);
 
-    socket.on("disconnect", () => {
-      io.to(socket.currentSpace).emit("user-disconnected", username);
-      delete users[socket.id];
+        socket.on("disconnect", () => {
+          io.to(socket.currentSpace).emit("user-disconnected", socket.username);
+          console.log("User disconnected.", socket.username);
+          socketSpaceRepository
+            .find({
+              where: {
+                username: socket.username,
+              },
+            })
+            .then((SocketSpace) => {
+              socketSpaceRepository
+                .remove(SocketSpace)
+                .then(() => {
+                  console.log("Socket_space removed.");
+                })
+                .catch((error) => {
+                  throw error;
+                });
+            });
+        });
+      });
     });
+  })
+  .catch((error) => {
+    throw error;
   });
-});
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}/`);

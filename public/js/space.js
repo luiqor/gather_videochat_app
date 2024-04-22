@@ -32,7 +32,7 @@ getUserMediaStream().then((stream) => {
     });
   });
 
-  socket.on("user-connected", (username) => {
+  socket.on("user-connected", () => {
     //when a new user/participant connects
     connectToNewUser(username, stream, peers, peer);
   });
@@ -66,9 +66,9 @@ socket.on("user-disconnected", (username) => {
   if (peers[username]) peers[username].close();
 });
 
-peer.on("open", (username) => {
+peer.on("open", () => {
   //RENDERING CONCRETE SPACE ID
-  socket.emit("update-spaces", username, SPACE_ID);
+  socket.emit("update-spaces", SPACE_ID);
 });
 
 peer.on("call", (call) => {
