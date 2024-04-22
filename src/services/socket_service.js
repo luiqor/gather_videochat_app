@@ -39,6 +39,7 @@ export default class SocketService {
       socketSpace.socket = newSocket;
       socketSpace.space = space;
       await socketSpaceRepository.save(socketSpace);
+
       //⭕ leave the current room and join the new one
       if (socket.currentRoom) socket.leave(socket.currentRoom);
 
@@ -77,8 +78,6 @@ export default class SocketService {
     if (socket) {
       await socketRepository.remove(socket);
       console.log("Socket removed.");
-    } else {
-      console.log("Socket not found.");
     }
   }
 }
