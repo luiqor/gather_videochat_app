@@ -70,7 +70,7 @@ typeorm
         );
       });
 
-      socket.on("update-spaces", async (spaceId) => {
+      socket.on("update-spaces", async (peerId, spaceId) => {
         let space = await spaceRepository.findOne({ where: { slug: spaceId } });
         console.log("Space:", space);
         if (!space) {
@@ -107,11 +107,11 @@ typeorm
         socket.join(spaceId);
         socket.currentSpace = spaceId;
 
-        io.to(spaceId).emit("user-connected", socket.username);
+        io.to(spaceId).emit("user-connected", peerId);
 
         socket.on("disconnect", () => {
-          io.to(socket.currentSpace).emit("user-disconnected", socket.username);
-          console.log("User disconnected.", socket.username);
+          io.to(socket.currentSpace).emit("user-disconnected", peerId);
+          console.log("User disconnected.", socket.username, "peerId:", peerId);
           socketSpaceRepository
             .find({
               where: {

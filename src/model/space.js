@@ -1,6 +1,6 @@
 export default class Space {
-  constructor(slug, creators_username) {
+  constructor(slug, creator_username) {
     this.slug = slug;
-    this.creators_username = creators_username;
+    this.creator_username = creator_username;
   }
 }
