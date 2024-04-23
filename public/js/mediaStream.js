@@ -3,7 +3,7 @@ const videoGrid = $("#video-grid");
 // Keep track of processed streams
 const processedStreams = new Set();
 
-export const addVideoStream = (video, stream, username) => {
+export const addVideoStream = (video, stream, username, videoPlaceholder) => {
   if (!stream || processedStreams.has(stream.id)) {
     return;
   }
@@ -14,7 +14,7 @@ export const addVideoStream = (video, stream, username) => {
     video.play();
   });
 
-  createVideoPlaceholder(video, username);
+  createVideoPlaceholder(video, username, videoPlaceholder);
 };
 
 export const getUserMediaStream = () => {
@@ -24,7 +24,7 @@ export const getUserMediaStream = () => {
   });
 };
 
-const createVideoPlaceholder = (video, username) => {
+const createVideoPlaceholder = (video, username, videoPlaceholder) => {
   const userTitle = document.createElement("p");
   userTitle.className = "video-user-title";
   if (username) userTitle.textContent = `${username}`;
@@ -32,8 +32,7 @@ const createVideoPlaceholder = (video, username) => {
   const videoLabel = document.createElement("div");
   videoLabel.className = "video-label";
   videoLabel.appendChild(userTitle);
-
-  const videoPlaceholder = document.createElement("div");
+  if (!videoPlaceholder) videoPlaceholder = document.createElement("div");
   videoPlaceholder.className = "video-holder";
   videoPlaceholder.appendChild(video);
   videoPlaceholder.appendChild(videoLabel);

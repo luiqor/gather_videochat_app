@@ -13,6 +13,7 @@ let peer = new Peer(undefined, {
   port: "8000",
 });
 const peers = {};
+let userCounter = 1;
 let myVideoStream; //to stream video of the participant
 let getUserMedia =
   navigator.getUserMedia ||
@@ -22,14 +23,25 @@ let getUserMedia =
 //VIDEO AND AUDIO TOGGLING OPTIONS
 getUserMediaStream().then((stream) => {
   myVideoStream = stream;
-  addVideoStream(myVideo, stream, "creator");
+  addVideoStream(
+    myVideo,
+    stream,
+    `👑 ${usernamesArray[0] == false ? "Me" : usernamesArray[0]}`
+  );
 
   peer.on("call", (call) => {
     call.answer(stream);
     const video = document.createElement("video");
 
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, "previous participant");
+      addVideoStream(
+        video,
+        userVideoStream,
+        usernamesArray[userCounter] == undefined
+          ? "Me"
+          : usernamesArray[userCounter]
+      );
+      userCounter++;
     });
   });
 
@@ -41,7 +53,6 @@ getUserMediaStream().then((stream) => {
   let inputMssg = $("input");
   $("html").keydown((e) => {
     if (e.which == 13 && inputMssg.val().length !== 0) {
-      console.log("Sending message with SPACE_ID:", SPACE_ID); // Log SPACE_ID
       socket.emit("message", inputMssg.val(), SPACE_ID); // Send SPACE_ID along with the message
       inputMssg.val("");
     }
@@ -51,7 +62,7 @@ getUserMediaStream().then((stream) => {
     if (messageSpaceId === SPACE_ID) {
       // Check if messageSpaceId matches SPACE_ID
       $("ul").append(
-        `<li class="message">${username}<br/><br/>${message}</li>`
+        `<li class="message">${username}:<br/><br/>${message}</li>`
       );
       scrollToBottom();
     }
