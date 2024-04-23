@@ -17,7 +17,7 @@ const AppDataSource = new DataSource({
   type: process.env.DB_TYPE,
   database: process.env.DATABASE,
   synchronize: true,
-  logging: true,
+  logging: false,
   foreignKeys: true,
   entities: getFilesInDirectory("../entity"),
   migrations: getFilesInDirectory("../migration"),

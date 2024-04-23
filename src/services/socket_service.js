@@ -46,7 +46,7 @@ export default class SocketService {
       socket.join(spaceId);
       socket.currentSpace = spaceId;
 
-      io.to(spaceId).emit("user-connected", peerId);
+      io.to(spaceId).emit("user-connected", peerId, socket.username);
 
       socket.on("disconnect", async () => {
         io.to(socket.currentSpace).emit("user-disconnected", peerId);

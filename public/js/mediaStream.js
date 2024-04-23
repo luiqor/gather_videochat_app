@@ -1,16 +1,20 @@
 const videoGrid = $("#video-grid");
 
-export const addVideoStream = (video, stream) => {
+// Keep track of processed streams
+const processedStreams = new Set();
+
+export const addVideoStream = (video, stream, username) => {
+  if (!stream || processedStreams.has(stream.id)) {
+    return;
+  }
+  processedStreams.add(stream.id);
+
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
   });
 
-  const div = document.createElement("div");
-  div.className = "video-holder";
-  div.appendChild(video);
-
-  videoGrid.append(div);
+  createVideoPlaceholder(video, username);
 };
 
 export const getUserMediaStream = () => {
@@ -18,4 +22,21 @@ export const getUserMediaStream = () => {
     video: true,
     audio: false,
   });
+};
+
+const createVideoPlaceholder = (video, username) => {
+  const userTitle = document.createElement("p");
+  userTitle.className = "video-user-title";
+  if (username) userTitle.textContent = `${username}`;
+
+  const videoLabel = document.createElement("div");
+  videoLabel.className = "video-label";
+  videoLabel.appendChild(userTitle);
+
+  const videoPlaceholder = document.createElement("div");
+  videoPlaceholder.className = "video-holder";
+  videoPlaceholder.appendChild(video);
+  videoPlaceholder.appendChild(videoLabel);
+
+  videoGrid.append(videoPlaceholder);
 };

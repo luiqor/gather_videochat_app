@@ -4,6 +4,7 @@ import { scrollToBottom } from "./spaceHelpers.js";
 import { muteMic, stopVideo } from "./spaceButtons.js";
 const socket = io();
 const myVideo = document.createElement("video");
+let username;
 
 myVideo.muted = true;
 let peer = new Peer(undefined, {
@@ -21,20 +22,20 @@ let getUserMedia =
 //VIDEO AND AUDIO TOGGLING OPTIONS
 getUserMediaStream().then((stream) => {
   myVideoStream = stream;
-  addVideoStream(myVideo, stream);
+  addVideoStream(myVideo, stream, "creator");
 
   peer.on("call", (call) => {
     call.answer(stream);
     const video = document.createElement("video");
 
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
+      addVideoStream(video, userVideoStream, "previous participant");
     });
   });
 
-  socket.on("user-connected", (peerId) => {
+  socket.on("user-connected", (peerId, username) => {
     //when a new user/participant connects
-    connectToNewUser(peerId, stream, peers, peer);
+    connectToNewUser(peerId, stream, peers, peer, username);
   });
 
   let inputMssg = $("input");
@@ -58,7 +59,7 @@ getUserMediaStream().then((stream) => {
 });
 
 socket.on("connect", () => {
-  let username = prompt("Enter name: ");
+  username = prompt("Enter name: ");
   socket.emit("initialize-user", username, SPACE_ID);
 });
 
@@ -74,11 +75,7 @@ peer.on("open", (peerId) => {
 peer.on("call", (call) => {
   //VIDEO RENDERING FOR MULTIPLE PARTICIPANTS
   getUserMedia({ video: true, audio: true }, (stream) => {
-    call.answer(stream); // Answers the call with an A/V stream.
-    const video = document.createElement("video");
-    call.on("stream", function (remoteStream) {
-      addVideoStream(video, remoteStream);
-    });
+    call.answer(stream); // Answer the call with an A/V stream.
   });
 });
 

@@ -161,3 +161,4 @@ dist
 *.sqlite
 *.sqlite3
 *.db
+*-journal
