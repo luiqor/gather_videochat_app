@@ -12,7 +12,7 @@ export default class SocketService {
   ) {
     console.log(`User connected to server.`);
     let newSocket = new Socket();
-    newSocket.socketId = socket.id;
+    newSocket.id = socket.id;
     await connection.manager.save(newSocket);
 
     socket.on("initialize-user", (username) => {
@@ -26,10 +26,10 @@ export default class SocketService {
     });
 
     socket.on("update-spaces", async (peerId, spaceId) => {
-      let space = await spaceRepository.findOne({ where: { slug: spaceId } });
+      let space = await spaceRepository.findOne({ where: { id: spaceId } });
       if (!space) {
         space = spaceRepository.create();
-        space.slug = spaceId;
+        space.id = spaceId;
         space.creator_username = socket.username;
         space = await spaceRepository.save(space);
       }
@@ -60,11 +60,11 @@ export default class SocketService {
       });
     });
   }
-  async removeSocketSpace(socketSpaceRepository, username, spaceSlug) {
+  async removeSocketSpace(socketSpaceRepository, username, spaceid) {
     const socketSpaces = await socketSpaceRepository.find({
       where: {
         username,
-        space: { slug: spaceSlug },
+        space: { id: spaceid },
       },
       relations: ["space"],
     });
@@ -73,8 +73,8 @@ export default class SocketService {
     console.log("Socket_space removed.");
   }
 
-  async removeSocket(socketRepository, socketId) {
-    const socket = await socketRepository.findOne({ where: { socketId } });
+  async removeSocket(socketRepository, id) {
+    const socket = await socketRepository.findOne({ where: { id } });
     if (socket) {
       await socketRepository.remove(socket);
       console.log("Socket removed.");

@@ -6,11 +6,11 @@ import { fileURLToPath } from "url";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
-import * as typeorm from "typeorm";
 import Socket from "./model/socket.js";
 import Space from "./model/space.js";
 import SocketSpace from "./model/socket_space.js";
 import SocketService from "./services/socket_service.js";
+import AppDataSource from "./services/datasource_service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,15 +34,7 @@ app.set("view engine", "ejs");
 app.use("/", route);
 const socketServiceInstance = new SocketService();
 
-typeorm
-  .createConnection({
-    type: process.env.DB_TYPE,
-    database: process.env.DATABASE,
-    synchronize: true,
-    logging: true,
-    foreignKeys: true,
-    entities: [__dirname + "/entity/*.js"],
-  })
+AppDataSource.initialize()
   .then(async (connection) => {
     console.log("Database connected successfully.");
     const socketRepository = connection.getRepository(Socket);

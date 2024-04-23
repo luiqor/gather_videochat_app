@@ -7,7 +7,7 @@ export default new EntitySchema({
   tableName: "sockets",
   target: Socket,
   columns: {
-    socketId: {
+    id: {
       primary: true,
       type: "varchar",
     },

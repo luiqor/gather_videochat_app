@@ -7,7 +7,7 @@ export default new EntitySchema({
   tableName: "spaces",
   target: Space,
   columns: {
-    slug: {
+    id: {
       primary: true,
       type: "varchar",
     },
