@@ -20,7 +20,7 @@ export const addVideoStream = (video, stream, username, videoPlaceholder) => {
 export const getUserMediaStream = () => {
   return navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   });
 };
 

@@ -13,6 +13,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+}
+.space-chat__videos-placeholder::-webkit-scrollbar {
+  display: none;
 }
 .space-chat__mssgchat-container {
   width: 30%;
