@@ -1,7 +1,7 @@
 import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
 import { scrollToBottom } from "./spaceHelpers.js";
-import { muteMic, stopVideo } from "./spaceButtons.js";
+import { muteMic, stopVideo, shareScreen } from "./spaceButtons.js";
 const socket = io();
 const myVideo = document.createElement("video");
 let username;
@@ -91,10 +91,6 @@ socket.on("connect", () => {
   socket.emit("initialize-user", username, SPACE_ID);
 });
 
-socket.on("user-disconnected", (peerId) => {
-  currentPeers = currentPeers.filter((peer) => peer.peer !== peerId);
-});
-
 socket.on("remove-screen", (domElementId) => {
   if (document.getElementById(domElementId)) {
     document.getElementById(domElementId).remove();
@@ -104,6 +100,7 @@ socket.on("remove-screen", (domElementId) => {
 peer.on("open", (peerId) => {
   //RENDERING CONCRETE SPACE ID
   socket.emit("update-spaces", peerId, SPACE_ID);
+  peerId = peerId;
 });
 
 peer.on("call", (call) => {
@@ -117,6 +114,19 @@ peer.on("call", (call) => {
   console.log(currentPeers);
 });
 
+socket.on("user-disconnected", (peerId) => {
+  let callsToDisconnect = currentPeers.filter(
+    (currentCall) => currentCall.peer === peerId
+  );
+
+  callsToDisconnect.forEach((call) => {
+    console.log(call);
+    call.close();
+  });
+
+  currentPeers = currentPeers.filter((call) => call.peer !== peerId);
+});
+
 document
   .getElementById("mute-button")
   .addEventListener("click", () => muteMic(myVideoStream));
@@ -126,47 +136,6 @@ document
 
 document
   .getElementById("share-screen")
-  .addEventListener("click", () => shareScreen(currentPeers, peerId));
-
-const shareScreen = (currentPeers, userId) => {
-  navigator.mediaDevices
-    .getDisplayMedia({
-      video: {
-        cursor: "always",
-      },
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-      },
-    })
-    .then((stream, userId) => {
-      let videoTrack = stream.getVideoTracks()[0];
-      videoTrack.onended = function () {
-        let videoPlaceholder = document.getElementById(
-          `peer-${userId}-presentation`
-        );
-        videoPlaceholder.remove();
-        socket.emit("removal-element", `peer-${userId}-presentation`);
-      };
-      const videoPlaceholder = document.createElement("div");
-      videoPlaceholder.id = `peer-${userId}-presentation`;
-      const video = document.createElement("video");
-
-      currentPeers.forEach((currentPeer) => {
-        const call = peer.call(currentPeer.peer, stream, {
-          metadata: {
-            videoTitle: `${username} stream`,
-            placeholderId: `peer-${userId}-presentation`,
-            type: "presentation",
-          },
-        });
-      });
-      addVideoStream(
-        video,
-        stream,
-        "📹 My stream",
-        `peer-${userId}-presentation`,
-        videoPlaceholder
-      );
-    });
-};
+  .addEventListener("click", () =>
+    shareScreen(currentPeers, username, peer, socket)
+  );

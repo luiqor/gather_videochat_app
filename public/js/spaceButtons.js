@@ -1,5 +1,4 @@
 import { addVideoStream } from "./mediaStream.js";
-let screenStream;
 let screenSharing = false;
 
 export const muteMic = (stream) => {
@@ -44,45 +43,72 @@ const setPlayVideo = () => {
   $("#video-button").html(html);
 };
 // у мен евідсутній currentPeer
-export function shareScreen(stream, peer, currentPeer) {
+export const shareScreen = (currentPeers, username, peer, socket) => {
   if (screenSharing) {
-    stopScreenSharing(stream); // Pass the local stream as an argument
+    stopScreenSharing(username, socket);
+    screenSharing = false;
+    setShare();
+    return;
   }
-
   navigator.mediaDevices
-    .getDisplayMedia({ video: true })
-    .then((screenStream) => {
-      let videoTrack = screenStream.getVideoTracks()[0];
-      videoTrack.onended = () => {
-        stopScreenSharing(stream); // Pass the local stream as an argument
+    .getDisplayMedia({
+      video: {
+        cursor: "always",
+      },
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+      },
+    })
+    .then((stream) => {
+      let videoTrack = stream.getVideoTracks()[0];
+      videoTrack.onended = function () {
+        stopScreenSharing(username, socket);
+        screenSharing = false;
+        setShare();
       };
 
-      if (peer) {
-        let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-          return s.track.kind == videoTrack.kind;
+      const videoPlaceholder = document.createElement("div");
+      videoPlaceholder.id = `peer-${username}-presentation`;
+      const video = document.createElement("video");
+
+      currentPeers.forEach((currentPeer) => {
+        const call = peer.call(currentPeer.peer, stream, {
+          metadata: {
+            videoTitle: `${username} stream`,
+            placeholderId: `peer-${username}-presentation`,
+            type: "presentation",
+          },
         });
-        sender.replaceTrack(videoTrack);
-        screenSharing = true;
-      }
-
-      console.log(screenStream);
+      });
+      addVideoStream(
+        video,
+        stream,
+        "📹 My stream",
+        `peer-${username}-presentation`,
+        videoPlaceholder
+      );
+      setStopShare();
+      screenSharing = true;
     });
-}
+};
 
-function stopScreenSharing(localStream) {
-  if (!screenSharing) return;
-  let videoTrack = localStream.getVideoTracks()[0];
+const stopScreenSharing = (username, socket) => {
+  let videoPlaceholder = document.getElementById(
+    `peer-${username}-presentation`
+  );
+  videoPlaceholder.remove();
+  socket.emit("removal-element", `peer-${username}-presentation`);
+};
 
-  if (peer) {
-    let sender = currentPeer.peerConnection.getSenders().find(function (s) {
-      return s.track.kind == videoTrack.kind;
-    });
-    sender.replaceTrack(videoTrack);
-  }
+const setShare = () => {
+  const html = `<i class="material-icons">present_to_all</i>
+              <span>Present</span>`;
+  $("#share-screen").html(html);
+};
 
-  screenStream.getTracks().forEach(function (track) {
-    track.stop();
-  });
-
-  screenSharing = false;
-}
+const setStopShare = () => {
+  const html = `<i class="material-icons disabled-button-element">stop_screen_share</i>
+              <span>Stop Presenting</span>`;
+  $("#share-screen").html(html);
+};

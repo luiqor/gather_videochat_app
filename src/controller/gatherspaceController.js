@@ -6,7 +6,8 @@ const space = async (req, res) => {
 
   try {
     const socketSpace = await socketSpaceRepository.find({
-      where: { space: { id: req.params.space } }, // Assuming your entity property is named 'spaceId'
+      where: { space: { id: req.params.space } },
+      order: { id: "ASC" },
     });
 
     const usernamesArray = socketSpace.map(
