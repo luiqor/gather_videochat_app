@@ -7,12 +7,13 @@ export const connectToNewUser = (
   peer,
   username
 ) => {
-  const call = peer.call(userId, stream);
+  const call = peer.call(userId, stream, {
+    videoTitle: `${username}`,
+  });
   const videoPlaceholder = document.createElement("div");
-  videoPlaceholder.id = `peer-${userId}`;
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, username, videoPlaceholder);
+    addVideoStream(video, userVideoStream, username, false, videoPlaceholder);
   });
   call.on("close", () => {
     videoPlaceholder.remove();

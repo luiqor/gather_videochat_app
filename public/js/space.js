@@ -15,7 +15,7 @@ let peer = new Peer(undefined, {
 });
 
 let userCounter = 1;
-let myVideoStream; //to stream video of the participant
+let myVideoStream;
 let currentPeers = [];
 let getUserMedia =
   navigator.getUserMedia ||
@@ -28,22 +28,31 @@ getUserMediaStream().then((stream) => {
   addVideoStream(
     myVideo,
     stream,
-    `👑 ${usernamesArray[0] == false ? "Me" : usernamesArray[0]}`
+    `👑 ${usernamesArray[0] == false ? `Me ${username}` : usernamesArray[0]}`
   );
 
   peer.on("call", (call) => {
     call.answer(stream);
     const video = document.createElement("video");
 
+    let isNotPresentation = true;
+
+    if (call.metadata) {
+      isNotPresentation = call.metadata.type !== "presentation";
+    }
+
     call.on("stream", (userVideoStream) => {
       addVideoStream(
         video,
         userVideoStream,
-        usernamesArray[userCounter] == undefined
-          ? "Me"
-          : usernamesArray[userCounter]
+        isNotPresentation
+          ? usernamesArray[userCounter] == undefined
+            ? `Me ${username}`
+            : usernamesArray[userCounter]
+          : call.metadata.videoTitle,
+        !isNotPresentation ? call.metadata.placeholderId : false
       );
-      userCounter++;
+      if (isNotPresentation) userCounter++;
     });
     if (!currentPeers.some((peer) => peer.peer === call.peer)) {
       currentPeers.push(call);
@@ -87,7 +96,9 @@ socket.on("user-disconnected", (peerId) => {
 });
 
 socket.on("remove-screen", (domElementId) => {
-  document.getElementById(domElementId).remove();
+  if (document.getElementById(domElementId)) {
+    document.getElementById(domElementId).remove();
+  }
 });
 
 peer.on("open", (peerId) => {
@@ -117,7 +128,7 @@ document
   .getElementById("share-screen")
   .addEventListener("click", () => shareScreen(currentPeers, peerId));
 
-const shareScreen = (currentPeers) => {
+const shareScreen = (currentPeers, userId) => {
   navigator.mediaDevices
     .getDisplayMedia({
       video: {
@@ -131,18 +142,31 @@ const shareScreen = (currentPeers) => {
     .then((stream, userId) => {
       let videoTrack = stream.getVideoTracks()[0];
       videoTrack.onended = function () {
+        let videoPlaceholder = document.getElementById(
+          `peer-${userId}-presentation`
+        );
         videoPlaceholder.remove();
-        socket.emit("removal-element", `peer-${userId}-stream`);
+        socket.emit("removal-element", `peer-${userId}-presentation`);
       };
       const videoPlaceholder = document.createElement("div");
-      videoPlaceholder.id = `peer-${userId}-stream`;
+      videoPlaceholder.id = `peer-${userId}-presentation`;
       const video = document.createElement("video");
 
       currentPeers.forEach((currentPeer) => {
         const call = peer.call(currentPeer.peer, stream, {
-          metadata: `${username} stream`,
+          metadata: {
+            videoTitle: `${username} stream`,
+            placeholderId: `peer-${userId}-presentation`,
+            type: "presentation",
+          },
         });
       });
-      addVideoStream(video, stream, "📹 My stream", videoPlaceholder);
+      addVideoStream(
+        video,
+        stream,
+        "📹 My stream",
+        `peer-${userId}-presentation`,
+        videoPlaceholder
+      );
     });
 };
