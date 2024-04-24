@@ -25,6 +25,10 @@ export default class SocketService {
       io.to(spaceId).emit("create-message", message, socket.username, spaceId);
     });
 
+    socket.on("removal-element", (domElementId) => {
+      io.to(socket.currentSpace).emit("remove-screen", domElementId);
+    });
+
     socket.on("update-spaces", async (peerId, spaceId) => {
       let space = await spaceRepository.findOne({ where: { id: spaceId } });
       if (!space) {
