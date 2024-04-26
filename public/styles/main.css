@@ -36,8 +36,16 @@
 button .space-chat__window::-webkit-scrollbar {
   display: none;
 }
+.space-chat__select-container {
+  padding: 22px 90px 0px 12px;
+  height: 40px;
+  display: flex;
+}
+.space-chat__select-container select {
+  margin: 10px;
+}
 .space-chat__input-container {
-  padding: 22px 12px;
+  padding: 10px 12px 22px 12px;
   display: flex;
 }
 .space-chat__controls {
@@ -71,6 +79,20 @@ button .space-chat__window::-webkit-scrollbar {
   font-size: 16px;
   padding: 10px;
   width: 100%;
+}
+.space-chat select {
+  background-color: rgb(37, 37, 37);
+  border: 2px solid slateblue;
+  border-radius: 5px;
+  color: white;
+  width: 100%;
+}
+.space-chat label[for=usernames-select] {
+  color: white;
+  background-color: slateblue;
+  padding: 5px;
+  margin: 10px;
+  padding: 0px 10px;
 }
 
 #video-grid {

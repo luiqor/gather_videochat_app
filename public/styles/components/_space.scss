@@ -9,7 +9,7 @@
     background-color: $accentColor;
   }
   &__videos-placeholder {
-    background-color: rgb(37, 37, 37);
+    background-color: $backgroundSecondary;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,10 +40,21 @@
     }
   }
 
+  &__select-container {
+    padding: 22px 90px 0px 12px;
+    height: 40px;
+    display: flex;
+
+    select {
+      margin: 10px;
+    }
+  }
+
   &__input-container {
-    padding: 22px 12px;
+    padding: 10px 12px 22px 12px;
     display: flex;
   }
+
   &__controls {
     display: flex;
     flex-direction: row;
@@ -78,5 +89,21 @@
     font-size: 16px;
     padding: 10px;
     width: 100%;
+  }
+
+  select {
+    background-color: $backgroundSecondary;
+    border: 2px solid $accentColor;
+    border-radius: 5px;
+    color: $elementsColor;
+    width: 100%;
+  }
+
+  label[for="usernames-select"] {
+    color: $elementsColor;
+    background-color: $accentColor;
+    padding: 5px;
+    margin: 10px;
+    padding: 0px 10px;
   }
 }

@@ -1,6 +1,6 @@
 import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
-import { scrollToBottom } from "./spaceHelpers.js";
+import { scrollToBottom, updateDropdown } from "./spaceHelpers.js";
 import {
   createSendButton,
   muteMic,
@@ -13,6 +13,7 @@ const myVideo = document.createElement("video");
 let username;
 let peerId;
 
+updateDropdown(usernamesArray);
 myVideo.muted = true;
 let peer = new Peer(undefined, {
   path: "/peerjs",
@@ -95,6 +96,13 @@ socket.on("remove-screen", (domElementId) => {
   }
 });
 
+socket.on("new-username", (someonesUserame) => {
+  usernamesArray.push(someonesUserame);
+  console.log(usernamesArray);
+
+  updateDropdown(usernamesArray);
+});
+
 peer.on("open", (peerId) => {
   //RENDERING CONCRETE SPACE ID
   socket.emit("update-spaces", peerId, SPACE_ID);
@@ -112,7 +120,7 @@ peer.on("call", (call) => {
   console.log(currentPeers);
 });
 
-socket.on("user-disconnected", (peerId) => {
+socket.on("user-disconnected", (peerId, username) => {
   let callsToDisconnect = currentPeers.filter(
     (currentCall) => currentCall.peer === peerId
   );
@@ -123,6 +131,9 @@ socket.on("user-disconnected", (peerId) => {
   });
 
   currentPeers = currentPeers.filter((call) => call.peer !== peerId);
+
+  usernamesArray = usernamesArray.filter((name) => name !== username);
+  updateDropdown(usernamesArray);
 });
 
 const inputMssg = document.getElementById("message-input");

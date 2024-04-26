@@ -15,9 +15,10 @@ export default class SocketService {
     newSocket.id = socket.id;
     await connection.manager.save(newSocket);
 
-    socket.on("initialize-user", (username) => {
+    socket.on("initialize-user", (username, spaceId) => {
       socket.username = username;
       console.log(`User ${username} initialized with socket id ${socket.id}.`);
+      io.to(spaceId).emit("new-username", username);
     });
 
     socket.on("message", (message, spaceId) => {
@@ -53,7 +54,11 @@ export default class SocketService {
       io.to(spaceId).emit("user-connected", peerId, socket.username);
 
       socket.on("disconnect", async () => {
-        io.to(socket.currentSpace).emit("user-disconnected", peerId);
+        io.to(socket.currentSpace).emit(
+          "user-disconnected",
+          peerId,
+          socket.username
+        );
         await this.removeSocketSpace(
           socketSpaceRepository,
           socket.username,
