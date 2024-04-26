@@ -1,7 +1,12 @@
 import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
 import { scrollToBottom } from "./spaceHelpers.js";
-import { muteMic, stopVideo, shareScreen } from "./spaceButtons.js";
+import {
+  muteMic,
+  stopVideo,
+  shareScreen,
+  recordSpace,
+} from "./spaceButtons.js";
 const socket = io();
 const myVideo = document.createElement("video");
 let username;
@@ -135,7 +140,11 @@ document
   .addEventListener("click", () => stopVideo(myVideoStream));
 
 document
-  .getElementById("share-screen")
+  .getElementById("share-screen-button")
   .addEventListener("click", () =>
     shareScreen(currentPeers, username, peer, socket)
   );
+
+document
+  .getElementById("record-button")
+  .addEventListener("click", () => recordSpace());
