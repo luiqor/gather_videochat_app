@@ -141,12 +141,12 @@ export const recordSpace = async () => {
   isRecording = true;
 };
 
-const combineStreamMic = async (screenStream) => {
-  const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  const combinedStream = new MediaStream();
+const combineStreamMic = (stream, micStream) => {
+  // Create a new MediaStream
+  let combinedStream = new MediaStream();
 
   // Add the video track from the screen stream
-  screenStream.getVideoTracks().forEach((track) => {
+  stream.getVideoTracks().forEach((track) => {
     combinedStream.addTrack(track);
   });
 
@@ -155,27 +155,37 @@ const combineStreamMic = async (screenStream) => {
     combinedStream.addTrack(track);
   });
 
-  return combinedStream;
+  let mediaRecorder = new MediaRecorder(combinedStream);
+
+  return mediaRecorder;
 };
 
 const createRecorder = async (stream, mimeType) => {
   // the stream data is stored in this array
   let recordedChunks = [];
 
-  const combinedStream = await combineStreamMic(stream);
-  const mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+  const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-  mediaRecorder.ondataavailable = function (e) {
-    if (e.data.size > 0) {
-      recordedChunks.push(e.data);
-    }
-  };
+  let mediaRecorder = combineStreamMic(stream, micStream);
+
   mediaRecorder.onstop = function () {
     setRecordSpace();
     isRecording = false;
     saveFile(recordedChunks);
     recordedChunks = [];
   };
+  mediaRecorder.ondataavailable = function (e) {
+    if (e.data.size > 0) {
+      recordedChunks.push(e.data);
+    }
+  };
+  stream.getTracks().forEach((track) => {
+    track.onended = function () {
+      if (mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+    };
+  });
   mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
   return mediaRecorder;
 };
@@ -205,7 +215,4 @@ const setStopRecordSpace = () => {
   const html = `<i class="material-icons disabled-button-element">radio_button_checked</i>
               <span>Recording...</span>`;
   $("#record-button").html(html);
-};
-mediaRecorder.onstop = function () {
-  setRecordSpace();
 };
