@@ -148,3 +148,8 @@ document
 document
   .getElementById("record-button")
   .addEventListener("click", () => recordSpace());
+
+document.getElementById("leave-space-button").addEventListener("click", () => {
+  if (confirm(`Are you sure you want to leave space ${SPACE_ID}?`))
+    window.close();
+});
