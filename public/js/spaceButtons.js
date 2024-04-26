@@ -4,6 +4,34 @@ let isRecording = false;
 let videoSharing;
 let mediaRecorder;
 
+export const createSendButton = (inputMssg) => {
+  let container = document.querySelector(".space-chat__input-container");
+  if (inputMssg.value !== "") {
+    if (!container.querySelector(".accent-button")) {
+      let button = document.createElement("button");
+      button.className = "accent-button";
+      button.id = "send-button";
+
+      let icon = document.createElement("i");
+      icon.className = "material-icons";
+      icon.textContent = "send";
+
+      button.appendChild(icon);
+      container.appendChild(button);
+
+      button.addEventListener("click", () => {
+        sendMessage();
+        container.removeChild(button);
+      });
+    }
+  } else {
+    let button = container.querySelector(".accent-button");
+    if (button) {
+      container.removeChild(button);
+    }
+  }
+};
+
 export const muteMic = (stream) => {
   let enabled = stream.getAudioTracks()[0].enabled;
   if (enabled) {

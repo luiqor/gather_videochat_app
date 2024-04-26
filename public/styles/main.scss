@@ -8,11 +8,19 @@ body {
   font-family: system-ui, Roboto;
   background-color: $backgroundPrimary;
 }
-
 button {
   cursor: pointer;
   border: none;
   background-color: transparent;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+.accent-button {
+  background-color: $accentColor;
+  margin-left: 8px;
+  border-radius: 10px;
+  color: $elementsColor;
 }
 
 .disabled-button-element {

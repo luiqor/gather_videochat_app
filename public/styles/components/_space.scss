@@ -35,8 +35,7 @@
   &__window {
     flex-grow: 1;
     overflow-y: scroll;
-
-    &::-webkit-scrollbar {
+    button &::-webkit-scrollbar {
       display: none;
     }
   }
@@ -55,9 +54,6 @@
 
     button {
       color: $elementsColor;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
       span {
         display: block;
       }

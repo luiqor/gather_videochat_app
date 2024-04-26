@@ -33,7 +33,7 @@
   flex-grow: 1;
   overflow-y: scroll;
 }
-.space-chat__window::-webkit-scrollbar {
+button .space-chat__window::-webkit-scrollbar {
   display: none;
 }
 .space-chat__input-container {
@@ -50,9 +50,6 @@
 }
 .space-chat__controls button {
   color: white;
-}
-.space-chat__controls button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
 }
 .space-chat__controls button span {
   display: block;
@@ -122,6 +119,16 @@ button {
   cursor: pointer;
   border: none;
   background-color: transparent;
+}
+button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.accent-button {
+  background-color: slateblue;
+  margin-left: 8px;
+  border-radius: 10px;
+  color: white;
 }
 
 .disabled-button-element {

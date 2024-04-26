@@ -2,6 +2,7 @@ import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
 import { scrollToBottom } from "./spaceHelpers.js";
 import {
+  createSendButton,
   muteMic,
   stopVideo,
   shareScreen,
@@ -72,14 +73,6 @@ getUserMediaStream().then((stream) => {
     peerId = peerId;
   });
 
-  let inputMssg = $("input");
-  $("html").keydown((e) => {
-    if (e.which == 13 && inputMssg.val().length !== 0) {
-      socket.emit("message", inputMssg.val(), SPACE_ID); // Send SPACE_ID along with the message
-      inputMssg.val("");
-    }
-  });
-
   socket.on("create-message", (message, username, messageSpaceId) => {
     if (messageSpaceId === SPACE_ID) {
       // Check if messageSpaceId matches SPACE_ID
@@ -131,6 +124,20 @@ socket.on("user-disconnected", (peerId) => {
 
   currentPeers = currentPeers.filter((call) => call.peer !== peerId);
 });
+
+const inputMssg = document.getElementById("message-input");
+const sendMessage = () => {
+  socket.emit("message", inputMssg.value, SPACE_ID); // Send SPACE_ID along with the message
+  inputMssg.value = "";
+};
+
+inputMssg.addEventListener("keypress", (event) => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
+inputMssg.addEventListener("input", () => createSendButton(inputMssg));
 
 document
   .getElementById("mute-button")
