@@ -46,41 +46,39 @@ const setPlayVideo = () => {
   $("#video-button").html(html);
 };
 
-export const shareScreen = (currentPeers, username, peer, socket) => {
+export const shareScreen = async (currentPeers, username, peer, socket) => {
   if (isSharingScreen) {
-    videoSharing.stop();
-    stopSharing(username, socket);
+    videoSharing.onended();
     return;
   }
-  setStream().then((stream) => {
-    videoSharing = stream.getVideoTracks()[0];
-    videoSharing.onended = function () {
-      stopSharing(username, socket);
-    };
 
-    const videoPlaceholder = document.createElement("div");
-    videoPlaceholder.id = `peer-${username}-presentation`;
-    const video = document.createElement("video");
+  let stream = await setStream();
+  videoSharing = stream.getVideoTracks()[0];
+  videoSharing.onended = async function () {
+    videoSharing.stop();
+    await stopScreenSharing(username, socket);
+    isSharingScreen = false;
+    setShare();
+  };
 
-    currentPeers.forEach((currentPeer) => {
-      callPeerPresentation(peer, currentPeer, stream, username);
-    });
-    addVideoStream(
-      video,
-      stream,
-      "📹 My stream",
-      `peer-${username}-presentation`,
-      videoPlaceholder
-    );
-    setStopShare();
-    isSharingScreen = true;
+  const videoPlaceholder = document.createElement("div");
+  videoPlaceholder.id = `peer-${username}-presentation`;
+  const video = document.createElement("video");
+
+  currentPeers.forEach((currentPeer) => {
+    callPeerPresentation(peer, currentPeer, stream, username);
   });
-};
 
-const stopSharing = (username, socket) => {
-  stopScreenSharing(username, socket);
-  isSharingScreen = false;
-  setShare();
+  addVideoStream(
+    video,
+    stream,
+    "📹 My stream",
+    `peer-${username}-presentation`,
+    videoPlaceholder
+  );
+
+  setStopShare();
+  isSharingScreen = true;
 };
 
 const callPeerPresentation = (peer, currentPeer, stream, username) => {
@@ -130,8 +128,6 @@ const setStream = async () => {
 export const recordSpace = async () => {
   if (isRecording) {
     mediaRecorder.stop();
-    setRecordSpace();
-    isRecording = false;
     return;
   }
   const stream = await setStream();
