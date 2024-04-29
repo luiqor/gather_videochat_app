@@ -7,6 +7,11 @@ export const updateDropdown = (usernamesArray) => {
   const usernamesSelect = document.getElementById("usernames-select");
   usernamesSelect.innerHTML = "";
 
+  let defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.text = "Everyone";
+  usernamesSelect.appendChild(defaultOption);
+
   usernamesArray.forEach((username) => {
     if (!username) return;
     let option = document.createElement("option");

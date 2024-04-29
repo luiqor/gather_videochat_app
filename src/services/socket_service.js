@@ -21,9 +21,36 @@ export default class SocketService {
       io.to(spaceId).emit("new-username", username);
     });
 
-    socket.on("message", (message, spaceId) => {
-      console.log("Received message with SPACE_ID:", spaceId);
-      io.to(spaceId).emit("create-message", message, socket.username, spaceId);
+    socket.on("message", async (message, spaceId, receiver) => {
+      console.log(
+        "Received message with SPACE_ID: ",
+        spaceId,
+        " to: ",
+        receiver
+      );
+      const getSocketByUsername = async (username, spaceId) => {
+        const socketSpace = await socketSpaceRepository.findOne({
+          where: { username: username, space: { id: spaceId } },
+          relations: ["socket"],
+        });
+        return socketSpace.socket.id;
+      };
+
+      let recieversAddresses = [];
+      receiver
+        ? recieversAddresses.push(
+            await getSocketByUsername(receiver),
+            socket.id
+          )
+        : recieversAddresses.push(spaceId);
+      recieversAddresses.forEach((address) => {
+        io.to(address).emit(
+          "create-message",
+          message,
+          socket.username,
+          receiver ? true : false
+        );
+      });
     });
 
     socket.on("removal-element", (domElementId) => {

@@ -73,16 +73,13 @@ getUserMediaStream().then((stream) => {
     connectToNewUser(peerId, stream, currentPeers, peer, username);
     peerId = peerId;
   });
+});
 
-  socket.on("create-message", (message, username, messageSpaceId) => {
-    if (messageSpaceId === SPACE_ID) {
-      // Check if messageSpaceId matches SPACE_ID
-      $("ul").append(
-        `<li class="message">${username}:<br/><br/>${message}</li>`
-      );
-      scrollToBottom();
-    }
-  });
+socket.on("create-message", (message, username, isPrivate) => {
+  $("ul").append(
+    `<li class="message">${username} ${isPrivate ? "(privately)" : ""}:<br/><br/>${message}</li>`
+  );
+  scrollToBottom();
 });
 
 socket.on("connect", () => {
@@ -137,8 +134,15 @@ socket.on("user-disconnected", (peerId, username) => {
 });
 
 const inputMssg = document.getElementById("message-input");
+const usersDropdown = document.getElementById("usernames-select");
 const sendMessage = () => {
-  socket.emit("message", inputMssg.value, SPACE_ID); // Send SPACE_ID along with the message
+  const receiver = usersDropdown ? usersDropdown.value : undefined;
+  socket.emit(
+    "message",
+    inputMssg.value,
+    SPACE_ID,
+    receiver !== "" ? receiver : undefined
+  );
   inputMssg.value = "";
 };
 
