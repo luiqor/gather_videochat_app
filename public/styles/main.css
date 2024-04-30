@@ -347,6 +347,26 @@ button .space-chat__window::-webkit-scrollbar {
   margin: 0.5em 0;
 }
 
+.error-message__container {
+  color: tomato;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.error-message h1 {
+  font-size: 4em;
+  margin: 0.2em 0;
+}
+.error-message p {
+  margin: 0px 20px 30px 20px;
+}
+.error-message button {
+  padding: 16px 32px;
+  white-space: nowrap;
+  margin: 0px 8px 8px 8px;
+}
+
 body {
   margin: 0;
   padding: 0;

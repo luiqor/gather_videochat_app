@@ -75,7 +75,7 @@
                   </button>
                 </div>
               </div>
-              <p class="attention-p" id="taken-space-message">
+              <p class="attention-p" id="invalid-space-message">
                 <% if (spaceAlreadyExists) { %>
                 Sorry. Name <%= spaceId %> for a space is already taken...
                 <% } %>
@@ -89,7 +89,7 @@
           <div
             class="join-options-cards__card"
             id="join-space-card"
-            onclick="location.href='/join-peers-space.html';"
+            onclick="location.href='/join-space'"
           >
             <div class="join-options-cards__icon_holder">
               <i class="material-icons join-options-cards__icon">duo</i>
