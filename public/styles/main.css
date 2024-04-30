@@ -266,6 +266,9 @@ button .space-chat__window::-webkit-scrollbar {
     margin: 0;
     padding: 30px;
   }
+  .join-options-cards__card p {
+    display: none;
+  }
 }
 .join-options-cards__icon_holder {
   display: flex;
@@ -424,7 +427,6 @@ a:active {
   .landing-container {
     padding-left: 16px;
     padding-right: 16px;
-    width: 100%;
   }
 }
 @media (min-width: 1025px) {
