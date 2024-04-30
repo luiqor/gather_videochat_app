@@ -1,5 +1,5 @@
 import express from "express";
-import { space } from "../controller/gatherspaceController.js";
+import { space, createSpace } from "../controller/gatherspaceController.js";
 import { index } from "../controller/mainController.js";
 
 const route = express.Router();
@@ -7,6 +7,8 @@ const route = express.Router();
 route.get("/", index);
 
 route.get("/:space", space);
+
+route.get("/create/:space/", createSpace);
 
 route.all("/*", (req, res) => {
   res
