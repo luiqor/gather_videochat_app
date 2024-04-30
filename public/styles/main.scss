@@ -1,6 +1,10 @@
+@import "./variables.scss";
 @import "./components/space.scss";
 @import "./components/videogrid.scss";
-@import "./variables.scss";
+@import "./components/space-title.scss";
+@import "./components/join-immediately.scss";
+@import "./components/join-options-cards.scss";
+@import "./components/planned-gatherings.scss";
 
 body {
   margin: 0;
@@ -13,9 +17,23 @@ button {
   border: none;
   background-color: transparent;
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: $secondAccentColor;
   }
 }
+
+a {
+  color: $elementsColor;
+  text-decoration: none;
+
+  &:hover {
+    color: $secondAccentColor;
+  }
+
+  &:active {
+    color: $accentColor;
+  }
+}
+
 .accent-button {
   background-color: $accentColor;
   margin-left: 8px;
@@ -29,4 +47,71 @@ button {
 
 .hidden {
   display: none;
+}
+
+.landing-container {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+
+  @media (max-width: 600px) {
+    // Mobile devices
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  @media (min-width: 601px) and (max-width: 1024px) {
+    // Tablet devices
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 100%;
+  }
+
+  @media (min-width: 1025px) {
+    // Desktop devices
+    padding-left: 50px;
+    padding-right: 50px;
+    max-width: 1128px;
+  }
+}
+
+section {
+  padding-bottom: 40px;
+}
+
+footer {
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $elementsColor;
+  @media (min-width: 601px) and (max-width: 1024px) {
+    width: 100%;
+  }
+}
+.attention-p {
+  color: $notAllowedColor;
+  margin: 0px 8px;
+}
+.header-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  > * {
+    margin: 10px 30px;
+  }
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+  }
+  a {
+    display: flex;
+    align-items: center;
+  }
+  img {
+    width: 40px;
+    height: 40px;
+  }
 }

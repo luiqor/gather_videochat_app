@@ -1,0 +1,72 @@
+@import "../variables.scss";
+
+.join-immediately {
+  &__container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.281);
+    color: $elementsColor;
+    overflow: hidden;
+    padding: 48px 16px;
+    border-radius: 12px;
+    width: 100%;
+
+    @media (max-width: 600px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  &__title {
+    margin-bottom: 40px;
+    margin-top: 0;
+
+    @media (max-width: 600px) {
+      max-width: 60%;
+      text-align: center;
+    }
+  }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__form-group {
+    button {
+      padding: 16px 32px;
+      white-space: nowrap;
+      margin: 0px 8px 8px 8px;
+    }
+
+    .form-input {
+      margin: 0px 8px;
+      height: 48px;
+      border: none;
+      justify-content: center;
+      text-align: center;
+      background-color: #242830;
+      color: $elementsColor;
+      width: 100%;
+    }
+
+    @media (max-width: 640px) {
+      margin-bottom: 12px;
+      .form-input {
+        margin-bottom: 12px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 641px) {
+      display: flex;
+      .form-input {
+        min-width: 280px;
+      }
+    }
+  }
+}
