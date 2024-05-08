@@ -45,6 +45,7 @@ const createVideoPlaceholder = (
   videoLabel.appendChild(userTitle);
   if (!videoPlaceholder) videoPlaceholder = document.createElement("div");
   if (videoPlaceholderId) videoPlaceholder.id = videoPlaceholderId;
+  else videoPlaceholder.id = `video-placeholder-${username}`;
   videoPlaceholder.className = "video-holder";
   videoPlaceholder.appendChild(video);
   videoPlaceholder.appendChild(videoLabel);

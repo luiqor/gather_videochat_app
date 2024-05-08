@@ -35,7 +35,7 @@ getUserMediaStream().then((stream) => {
   addVideoStream(
     myVideo,
     stream,
-    `👑 ${usernamesArray[0] == false ? `Me ${username}` : usernamesArray[0]}`
+    `${usernamesArray[0] == false ? `${username}` : usernamesArray[0]}`
   );
 
   peer.on("call", (call) => {
@@ -54,7 +54,7 @@ getUserMediaStream().then((stream) => {
         userVideoStream,
         isNotPresentation
           ? usernamesArray[userCounter] == undefined
-            ? `Me ${username}`
+            ? `${username}`
             : usernamesArray[userCounter]
           : call.metadata.videoTitle,
         !isNotPresentation ? call.metadata.placeholderId : false
@@ -117,20 +117,36 @@ peer.on("call", (call) => {
   console.log(currentPeers);
 });
 
-socket.on("user-disconnected", (peerId, username) => {
+socket.on("user-disconnected", (peerId, usernameOfDisconnected) => {
   let callsToDisconnect = currentPeers.filter(
     (currentCall) => currentCall.peer === peerId
   );
 
   callsToDisconnect.forEach((call) => {
-    console.log(call);
     call.close();
+    let videoElementOfDisconnected = document.getElementById(
+      `video-placeholder-${usernameOfDisconnected}`
+    );
+    if (videoElementOfDisconnected) {
+      videoElementOfDisconnected.remove();
+    }
   });
 
   currentPeers = currentPeers.filter((call) => call.peer !== peerId);
 
-  usernamesArray = usernamesArray.filter((name) => name !== username);
+  usernamesArray = usernamesArray.filter(
+    (name) => name !== usernameOfDisconnected
+  );
   updateDropdown(usernamesArray);
+
+  // After removing the video element of the disconnected user, force a refresh of the video elements of the remaining users
+  currentPeers.forEach((call) => {
+    let videoElement = document.getElementById(`video-placeholder-${username}`);
+    if (videoElement) {
+      let video = videoElement.querySelector("video");
+      video.srcObject = myVideoStream;
+    }
+  });
 });
 
 const inputMssg = document.getElementById("message-input");
