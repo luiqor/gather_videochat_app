@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <title>Index</title>
+    <title><%= message %></title>
   </head>
   <body>
     <header>
@@ -21,7 +21,6 @@
             />GatherSpace</a
           >
           <nav>
-            <a href="/">Account</a>
           </nav>
         </div>
       </div>
@@ -30,8 +29,9 @@
       <section class="error-message">
       <div class="landing-container">
         <div class="error-message__container">
-        <h1>Error <%= statusCode  %></h1>
-        <p><%= errorMessage %></p>
+        <h1><%= message %></h1>
+        <h2><%= error.status %></h2>
+        <pre><%= error.stack %></pre>
         <button class="accent-button" onclick="location.href='/';">Ok</button>
         </div>
       </div>

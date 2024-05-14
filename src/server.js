@@ -11,6 +11,7 @@ import Space from "./model/space.js";
 import SocketSpace from "./model/socket_space.js";
 import SocketService from "./services/socket_service.js";
 import AppDataSource from "./services/datasource_service.js";
+import createError from "http-errors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,6 +34,18 @@ app.set("view engine", "ejs");
 
 app.use("/", route);
 const socketServiceInstance = new SocketService();
+
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  res.status(err.status || 500);
+  res.render("error-page");
+});
 
 AppDataSource.initialize()
   .then(async (connection) => {
