@@ -38,7 +38,9 @@ const testSpaceId = (spaceId, res) => {
       403,
       "Invalid spaceId format. It should consist of three words separated by hyphens."
     );
+    return false;
   }
+  return true;
 };
 
 const createSpace = async (req, res) => {
