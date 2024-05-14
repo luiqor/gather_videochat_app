@@ -6,6 +6,9 @@ import { fileURLToPath } from "url";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import { ExpressPeerServer } from "peer";
+import Socket from "./model/socket.js";
+import Space from "./model/space.js";
+import SocketSpace from "./model/socket_space.js";
 import SocketService from "./services/socket_service.js";
 import AppDataSource from "./services/datasource_service.js";
 
@@ -32,8 +35,22 @@ app.use("/", route);
 const socketServiceInstance = new SocketService();
 
 AppDataSource.initialize()
-  .then(async () => {
+  .then(async (connection) => {
     console.log("Database connected successfully.");
+    const socketRepository = connection.getRepository(Socket);
+    const spaceRepository = connection.getRepository(Space);
+    const socketSpaceRepository = connection.getRepository(SocketSpace);
+
+    io.on("connection", async (socket) => {
+      await socketServiceInstance.handleConnection(
+        connection,
+        socket,
+        socketRepository,
+        spaceRepository,
+        socketSpaceRepository,
+        io
+      );
+    });
   })
   .catch((error) => {
     throw error;
