@@ -310,18 +310,45 @@ button .space-chat__window::-webkit-scrollbar {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  word-wrap: break-word;
+  width: 100%;
+  padding: 0px 30px;
 }
 .error-message h1 {
   font-size: 4em;
   margin: 0.2em 0;
-}
-.error-message p {
-  margin: 0px 20px 30px 20px;
+  width: 100%;
 }
 .error-message button {
   padding: 16px 32px;
   white-space: nowrap;
   margin: 0px 8px 8px 8px;
+}
+
+.space-form__container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  width: 100%;
+  padding: 0px 30px;
+  max-width: 1128px;
+}
+.space-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+}
+.space-form__form input {
+  box-sizing: border-box;
+  line-height: 2em;
+  width: 100%;
+}
+.space-form__form button {
+  margin: 0;
+  padding: 16px 32px;
+  white-space: nowrap;
+  width: 100%;
 }
 
 body {

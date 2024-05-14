@@ -7,15 +7,15 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    word-wrap: break-word;
+    width: 100%;
+    padding: 0px 30px;
   }
 
   h1 {
     font-size: 4em;
     margin: 0.2em 0;
-  }
-
-  p {
-    margin: 0px 20px 30px 20px;
+    width: 100%;
   }
 
   button {

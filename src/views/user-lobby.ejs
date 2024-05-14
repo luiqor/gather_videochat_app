@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="header-content">
+          <a href="/"
+            ><img
+              src="/assets/icons/gather-space.svg"
+              alt="gather space galaxy"
+            />GatherSpace</a
+          >
+        </div>
+      </div>
+    </header>
+    <main>
+      <section>
+        <div class="landing-container">
+          <div class="space-form__container">
+            <h1>Join space <%= spaceId %></h1>
+            <form method="post" class="space-form__form">
+              <input type="text" name="spaceId" value="<%= spaceId %>" hidden />
+              <label for="username">Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="alien007"
+                required
+              />
+              <button class="accent-button" type="submit">Join space</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="footer-container">
+        <div class="footer-content">
+          <a href="https://github.com/luiqor">2024 by @luiqor</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

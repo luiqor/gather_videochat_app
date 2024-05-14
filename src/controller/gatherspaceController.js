@@ -7,6 +7,9 @@ const space = async (req, res, next) => {
   if (!testSpaceId(spaceId, res, next)) {
     return;
   }
+  if (!req.query.username) {
+    return res.redirect("/" + "user-lobby/" + spaceId);
+  }
   try {
     const socketSpaceRepository =
       await AppDataSource.getRepository(SocketSpace);
@@ -31,7 +34,10 @@ const space = async (req, res, next) => {
 
 const testSpaceId = (spaceId, res, next) => {
   if (!/^[a-z0-9]+-[a-z0-9]+-[a-z0-9]+$/.test(spaceId) || spaceId.length < 5) {
-    const err = new Error("Invalid spaceId");
+    const err = new Error(
+      "SpaceId must be at least 5 characters long and " +
+        "contain only lowercase letters and numbers separated by hyphens"
+    );
     return next(err);
   }
   return true;
@@ -50,7 +56,27 @@ const createSpace = async (req, res) => {
     });
     return;
   }
-  res.redirect(`/${req.params.space}`);
+  res.render("creator-lobby", { spaceId: req.params.space });
+  // post --> res.redirect(`/${req.params.space}`);
 };
 
-export { space, createSpace };
+const userLobby = async (req, res, next) => {
+  const spaceId = req.params.space;
+  if (!testSpaceId(spaceId, res, next)) {
+    return;
+  }
+  const spaceRepository = await AppDataSource.getRepository(Space);
+  const sameSpaceAsRequested = await spaceRepository.findOne({
+    where: { id: req.params.space },
+  });
+  if (!sameSpaceAsRequested) {
+    const err = new Error(
+      "This space does not exist. Create a new space or join an existing one."
+    );
+    return next(err);
+  }
+  res.render("user-lobby", { spaceId: spaceId });
+  // post --> res.redirect(`/${req.params.space}`);
+};
+
+export { space, createSpace, userLobby };
