@@ -33,7 +33,7 @@ export default class SocketService {
           where: { username: username, space: { id: spaceId } },
           relations: ["socket"],
         });
-        return socketSpace.socket.id;
+        return socketSpace && socketSpace.socket ? socketSpace.socket.id : null;
       };
 
       let recieversAddresses = [];

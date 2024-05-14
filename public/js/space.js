@@ -35,7 +35,7 @@ getUserMediaStream().then((stream) => {
   addVideoStream(
     myVideo,
     stream,
-    `👑 ${usernamesArray[0] == false ? `Me ${username}` : usernamesArray[0]}`
+    `${usernamesArray[0] == false ? `${username}` : usernamesArray[0]}`
   );
 
   peer.on("call", (call) => {
