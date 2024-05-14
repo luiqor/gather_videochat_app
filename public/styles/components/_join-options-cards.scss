@@ -16,11 +16,11 @@
     }
   }
   &__card {
+    user-select: none;
     width: 100vh;
     height: 200px;
     border-radius: 12px;
     padding: 50px;
-    cursor: pointer;
 
     &:nth-child(3n + 1) {
       background-color: $secondAccentColor;
@@ -34,11 +34,10 @@
       background-color: $accentColor;
     }
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.027);
-    }
-
     @media (max-width: 600px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       box-sizing: border-box;
       margin: 0;
@@ -57,5 +56,11 @@
     position: relative;
     height: 50px;
     width: 50px;
+  }
+  &__clickable-card {
+    cursor: pointer;
+    &:hover {
+      background-color: $backgroundSecondary;
+    }
   }
 }

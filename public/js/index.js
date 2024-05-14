@@ -14,3 +14,27 @@ document.getElementById("create-space-button").addEventListener("click", () => {
 spaceSlugInput.addEventListener("input", () => {
   invalidSpaceMessage.textContent = "";
 });
+
+function updateDateTime() {
+  const now = new Date();
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  const date = now.toLocaleDateString(undefined, options);
+  const time =
+    now.getHours().toString().padStart(2, "0") +
+    " : " +
+    now.getMinutes().toString().padStart(2, "0");
+
+  document.getElementById("date").textContent = date;
+  document.getElementById("time").textContent = time;
+}
+
+window.onload = () => {
+  updateDateTime();
+  setInterval(updateDateTime, 60000);
+};

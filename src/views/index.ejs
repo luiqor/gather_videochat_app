@@ -24,9 +24,6 @@
               alt="gather space galaxy"
             />GatherSpace</a
           >
-          <nav>
-            <a href="/">Account</a>
-          </nav>
         </div>
       </div>
     </header>
@@ -87,7 +84,7 @@
       <section class="join-options-cards">
         <div class="join-options-cards__container landing-container">
           <div
-            class="join-options-cards__card"
+            class="join-options-cards__card join-options-cards__clickable-card"
             id="join-space-card"
             onclick="location.href='/join-space'"
           >
@@ -101,34 +98,11 @@
             </p>
           </div>
           <div class="join-options-cards__card" id="plan-gathering-card">
-            <div class="join-options-cards__icon_holder">
-              <i class="material-icons join-options-cards__icon"
-                >calendar_month</i
-              >
-            </div>
-            <h3>Plan gathering</h3>
-            <p>
-              Start planned space and share the space code with your peers.
-              Space code would be reserved for a planned time.
-            </p>
-          </div>
-        </div>
-      </section>
-      <section class="planned-gatherings">
-        <div class="landing-container">
-          <div class="planned-gatherings__container">
-            <div class="planned-gatherings__introduction">
-              <h2 class="planned-gatherings__time">12 : 10</h2>
-              <p class="planned-gatherings__date">Monday, 12th of July</p>
-            </div>
-            <div class="planned-gatherings__content">
-              <ul>
-                <li><a href="/">12:10 12.04.2024 fancy-elephants-car</a></li>
-                <li><a href="/">12:10 12.04.2024 fancy-elephants-car</a></li>
-                <li><a href="/">12:10 12.04.2024 fancy-elephants-car</a></li>
-                <li><a href="/">12:10 12.04.2024 fancy-elephants-car</a></li>
-                <li><a href="/">12:10 12.04.2024 fancy-elephants-car</a></li>
-              </ul>
+            <div class="planned-gatherings__container">
+              <div class="planned-gatherings__introduction">
+                <h2 id="time" class="planned-gatherings__time"></h2>
+                <p id="date" class="planned-gatherings__date"></p>
+              </div>
             </div>
           </div>
         </div>

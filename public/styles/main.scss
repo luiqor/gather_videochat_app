@@ -80,6 +80,7 @@ section {
 }
 
 footer {
+  user-select: none;
   height: 200px;
   display: flex;
   justify-content: center;
@@ -94,6 +95,7 @@ footer {
   margin: 0px 8px;
 }
 .header-content {
+  user-select: none;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -113,5 +115,7 @@ footer {
   img {
     width: 40px;
     height: 40px;
+    user-select: none;
+    pointer-events: none;
   }
 }

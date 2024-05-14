@@ -241,11 +241,13 @@ button .space-chat__window::-webkit-scrollbar {
   }
 }
 .join-options-cards__card {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   width: 100vh;
   height: 200px;
   border-radius: 12px;
   padding: 50px;
-  cursor: pointer;
 }
 .join-options-cards__card:nth-child(3n+1) {
   background-color: rgb(255, 165, 0);
@@ -256,11 +258,11 @@ button .space-chat__window::-webkit-scrollbar {
 .join-options-cards__card:nth-child(3n) {
   background-color: slateblue;
 }
-.join-options-cards__card:hover {
-  background-color: rgba(0, 0, 0, 0.027);
-}
 @media (max-width: 600px) {
   .join-options-cards__card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     box-sizing: border-box;
     margin: 0;
@@ -278,44 +280,19 @@ button .space-chat__window::-webkit-scrollbar {
   height: 50px;
   width: 50px;
 }
+.join-options-cards__clickable-card {
+  cursor: pointer;
+}
+.join-options-cards__clickable-card:hover {
+  background-color: rgb(37, 37, 37);
+}
 
-.planned-gatherings__container {
-  position: relative;
-  color: white;
-  display: flex;
-  justify-content: center;
-  color: white;
-  position: relative;
-  width: 100%;
-  border-radius: 12px;
-}
-.planned-gatherings__container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("/assets/images/banner.jpg");
-  background-size: cover;
-  opacity: 0.5;
-  z-index: -1;
-}
-@media (max-width: 640px) {
-  .planned-gatherings__container {
-    flex-direction: column;
-  }
-}
 .planned-gatherings__introduction {
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-@media (min-width: 641px) {
-  .planned-gatherings__introduction {
-    padding-right: 100px;
-  }
 }
 .planned-gatherings__time {
   padding: 0px;
@@ -325,29 +302,6 @@ button .space-chat__window::-webkit-scrollbar {
 .planned-gatherings__date {
   margin: 0px;
   padding: 0px;
-}
-.planned-gatherings__content {
-  display: flex;
-  flex-direction: column;
-}
-@media (max-width: 640px) {
-  .planned-gatherings__content {
-    align-items: center;
-    justify-items: center;
-  }
-}
-.planned-gatherings__content ul {
-  list-style-type: none;
-  margin: 20px;
-  margin: 0;
-}
-@media (max-width: 640px) {
-  .planned-gatherings__content ul {
-    padding: 10px 0px;
-  }
-}
-.planned-gatherings__content li {
-  margin: 0.5em 0;
 }
 
 .error-message__container {
@@ -442,6 +396,9 @@ section {
 }
 
 footer {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   height: 200px;
   display: flex;
   justify-content: center;
@@ -460,6 +417,9 @@ footer {
 }
 
 .header-content {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -481,4 +441,8 @@ footer {
 .header-content img {
   width: 40px;
   height: 40px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  pointer-events: none;
 }/*# sourceMappingURL=main.css.map */
