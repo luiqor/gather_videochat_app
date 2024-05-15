@@ -11,8 +11,11 @@ export default new EntitySchema({
       primary: true,
       type: "varchar",
     },
-    creator_username: {
+    creator: {
       type: "varchar",
+    },
+    lastDate: {
+      type: "date",
     },
   },
   relations: {

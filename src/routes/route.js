@@ -1,8 +1,10 @@
 import express from "express";
 import {
   space,
-  createSpace,
-  userLobby,
+  getCreateSpace,
+  getUserLobby,
+  postUserLobby,
+  postCreateSpace,
 } from "../controller/gatherspaceController.js";
 import { index } from "../controller/mainController.js";
 import createError from "http-errors";
@@ -14,9 +16,11 @@ route.get("/join-space", (req, res) => {
   res.render("join-space");
 });
 
-route.get("/user-lobby/:space/", userLobby);
+route.get("/user-lobby/:space/", getUserLobby);
+route.post("/user-lobby/:space/", postUserLobby);
 
-route.get("/create/:space/", createSpace);
+route.get("/create/:space/", getCreateSpace);
+route.post("/create/:space/", postCreateSpace);
 
 route.get("/:space", space);
 

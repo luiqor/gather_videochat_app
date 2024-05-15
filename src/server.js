@@ -12,6 +12,8 @@ import SocketSpace from "./model/socket_space.js";
 import SocketService from "./services/socket_service.js";
 import AppDataSource from "./services/datasource_service.js";
 import createError from "http-errors";
+import bodyParser from "body-parser";
+import session from "express-session";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,6 +24,17 @@ const server = createServer(app);
 
 const io = new Server(server);
 const peerServer = ExpressPeerServer(server, { debug: true });
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/css", express.static(path.join(__dirname, "../public/css")));

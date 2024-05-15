@@ -35,7 +35,7 @@ getUserMediaStream().then((stream) => {
   addVideoStream(
     myVideo,
     stream,
-    `${usernamesArray[0] == false ? `${username}` : usernamesArray[0]}`
+    `${usernamesArray[0] == false ? `${USERNAME}` : usernamesArray[0]}`
   );
 
   peer.on("call", (call) => {
@@ -83,8 +83,18 @@ socket.on("create-message", (message, username, isPrivate) => {
 });
 
 socket.on("connect", () => {
-  username = prompt("Enter name: ");
-  socket.emit("initialize-user", username, SPACE_ID);
+  username = USERNAME;
+  setTimeout(() => {
+    socket.emit("initialize-user", USERNAME, SPACE_ID);
+  }, 2000);
+
+  peer.on("open", (peerId) => {
+    setTimeout(() => {
+      //RENDERING CONCRETE SPACE ID
+      socket.emit("update-spaces", peerId, SPACE_ID);
+      peerId = peerId;
+    }, 2000);
+  });
 });
 
 socket.on("remove-screen", (domElementId) => {
@@ -98,12 +108,6 @@ socket.on("new-username", (someonesUserame) => {
   console.log(usernamesArray);
 
   updateDropdown(usernamesArray);
-});
-
-peer.on("open", (peerId) => {
-  //RENDERING CONCRETE SPACE ID
-  socket.emit("update-spaces", peerId, SPACE_ID);
-  peerId = peerId;
 });
 
 peer.on("call", (call) => {

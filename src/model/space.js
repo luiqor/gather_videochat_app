@@ -1,6 +1,7 @@
 export default class Space {
-  constructor(id, creator_username) {
+  constructor(id, creator, lastDate) {
     this.id = id;
-    this.creator_username = creator_username;
+    this.creator = creator;
+    this.lastDate = lastDate;
   }
 }

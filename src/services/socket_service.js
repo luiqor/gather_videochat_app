@@ -10,7 +10,7 @@ export default class SocketService {
     socketSpaceRepository,
     io
   ) {
-    console.log(`User connected to server.`);
+    console.log(`User connected to socket server.`);
     let newSocket = new Socket();
     newSocket.id = socket.id;
     await connection.manager.save(newSocket);
@@ -62,7 +62,7 @@ export default class SocketService {
       if (!space) {
         space = spaceRepository.create();
         space.id = spaceId;
-        space.creator_username = socket.username;
+        space.creator = socket.username;
         space = await spaceRepository.save(space);
       }
 
@@ -70,6 +70,7 @@ export default class SocketService {
       socketSpace.username = socket.username;
       socketSpace.socket = newSocket;
       socketSpace.space = space;
+      console.log("Saving socketSpace: ", socketSpace);
       await socketSpaceRepository.save(socketSpace);
 
       //⭕ leave the current room and join the new one

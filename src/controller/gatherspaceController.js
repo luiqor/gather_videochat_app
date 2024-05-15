@@ -3,12 +3,13 @@ import SocketSpace from "../model/socket_space.js";
 import Space from "../model/space.js";
 
 const space = async (req, res, next) => {
+  const username = req.session.username;
   const spaceId = req.params.space;
   if (!testSpaceId(spaceId, res, next)) {
     return;
   }
-  if (!req.query.username) {
-    return res.redirect("/" + "user-lobby/" + spaceId);
+  if (!username) {
+    return res.redirect(`/user-lobby/${spaceId}`);
   }
   try {
     const socketSpaceRepository =
@@ -26,6 +27,7 @@ const space = async (req, res, next) => {
     res.render("space", {
       spaceId: spaceId,
       usernamesArray: usernamesArray,
+      username: username,
     });
   } catch (error) {
     return next(error);
@@ -43,8 +45,7 @@ const testSpaceId = (spaceId, res, next) => {
   return true;
 };
 
-const createSpace = async (req, res) => {
-  console.log("Creating new space...", req.params.space);
+const getCreateSpace = async (req, res) => {
   const spaceRepository = await AppDataSource.getRepository(Space);
   const sameSpaceAsRandom = await spaceRepository.findOne({
     where: { id: req.params.space },
@@ -60,7 +61,22 @@ const createSpace = async (req, res) => {
   // post --> res.redirect(`/${req.params.space}`);
 };
 
-const userLobby = async (req, res, next) => {
+const postCreateSpace = async (req, res) => {
+  const spaceId = req.body.spaceId;
+  console.log("Post create new space...", spaceId);
+
+  const spaceRepository = await AppDataSource.getRepository(Space);
+  let space = spaceRepository.create();
+  space.id = spaceId;
+  space.creator = req.body.username;
+  space.lastDate = req.body.date;
+  space = await spaceRepository.save(space);
+
+  req.session.username = req.body.username;
+  res.redirect(`/${spaceId}`);
+};
+
+const getUserLobby = async (req, res, next) => {
   const spaceId = req.params.space;
   if (!testSpaceId(spaceId, res, next)) {
     return;
@@ -79,4 +95,9 @@ const userLobby = async (req, res, next) => {
   // post --> res.redirect(`/${req.params.space}`);
 };
 
-export { space, createSpace, userLobby };
+const postUserLobby = async (req, res) => {
+  req.session.username = req.body.username;
+  res.redirect(`/${req.body.spaceId}`);
+};
+
+export { space, getCreateSpace, getUserLobby, postUserLobby, postCreateSpace };
