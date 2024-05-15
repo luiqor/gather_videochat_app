@@ -14,6 +14,8 @@ import AppDataSource from "./services/datasource_service.js";
 import createError from "http-errors";
 import bodyParser from "body-parser";
 import session from "express-session";
+import cron from "node-cron";
+import { LessThan, IsNull } from "typeorm";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -81,6 +83,35 @@ AppDataSource.initialize()
   .catch((error) => {
     throw error;
   });
+
+cron.schedule(
+  "0 0 * * *",
+  async () => {
+    console.log("running a task of deleting spaces");
+    try {
+      const socketSpaceRepository = AppDataSource.getRepository(SocketSpace);
+
+      const spaceRepository = AppDataSource.getRepository(Space);
+      const now = new Date();
+      const notNeededSpaces = await spaceRepository.find({
+        where: [{ lastDate: LessThan(now) }, { lastDate: IsNull() }],
+      });
+      for (const space of notNeededSpaces) {
+        const relatedEntities = await socketSpaceRepository.find({
+          where: { spaceId: space.id },
+        });
+        await socketSpaceRepository.remove(relatedEntities);
+      }
+      await spaceRepository.remove(notNeededSpaces);
+    } catch (err) {
+      console.error("Error deleting spaces:", err);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Europe/Kiev",
+  }
+);
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}/`);
