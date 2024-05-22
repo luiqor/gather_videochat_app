@@ -24,6 +24,34 @@ The application, built completly with JavaScript, follows the MVC (Model-View-Co
 <img src="https://img.shields.io/badge/ejs-%23981E32.svg?&style=for-the-badge&logo=ejs&logoColor=white" />
 <img src="https://img.shields.io/badge/peerjs webrtc-%23FF4747.svg?&style=for-the-badge&logo=webrtc&logoColor=white" />
 
+### Features Preview
+Space creation
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/4802091f-fefa-4b10-9e30-e1a6f670be45
+
+Private and public chatting
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/2f56e8f3-77e0-4ebf-933a-e37c1fee00b2
+
+Disabling video
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/5a25a64d-a477-422c-9d9a-329c17e5e2c1
+
+Recording saving to downloads
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/cdb777e4-d397-443c-9fd6-4b64f0159927
+
+Joining a space
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/0269a043-023c-4ee2-a8b4-e28d328863ec
+
+Screensharing
+
+https://github.com/luiqor/gather_videochat_app/assets/141519826/355bfecf-7af7-4b8b-9a34-193da75e9b00
+
+
+
+
 ### Setting Up the Development Environment
 
 Follow these steps to set up and run the development version of the application:
