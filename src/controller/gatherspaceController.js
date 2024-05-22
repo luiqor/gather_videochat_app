@@ -58,21 +58,23 @@ const getCreateSpace = async (req, res) => {
     return;
   }
   res.render("creator-lobby", { spaceId: req.params.space });
-  // post --> res.redirect(`/${req.params.space}`);
 };
 
-const postCreateSpace = async (req, res) => {
+const postCreateSpace = async (req, res, next) => {
   const spaceId = req.body.spaceId;
-  console.log("Post create new space...", spaceId);
+  const username = req.body.username;
+  if (!testUsername(username, res, next)) {
+    return;
+  }
 
   const spaceRepository = await AppDataSource.getRepository(Space);
   let space = spaceRepository.create();
   space.id = spaceId;
-  space.creator = req.body.username;
+  space.creator = username;
   space.lastDate = req.body.date;
   space = await spaceRepository.save(space);
 
-  req.session.username = req.body.username;
+  req.session.username = username;
   res.redirect(`/${spaceId}`);
 };
 
@@ -92,12 +94,41 @@ const getUserLobby = async (req, res, next) => {
     return next(err);
   }
   res.render("user-lobby", { spaceId: spaceId });
-  // post --> res.redirect(`/${req.params.space}`);
 };
 
-const postUserLobby = async (req, res) => {
-  req.session.username = req.body.username;
+const postUserLobby = async (req, res, next) => {
+  const spaceId = req.params.space;
+  const username = req.body.username;
+  if (!testUsername(username, res, next)) {
+    return;
+  }
+  const socketSpaceRepository = await AppDataSource.getRepository(SocketSpace);
+  const sameUsernameInSpace = await socketSpaceRepository.findOne({
+    where: { username: username, space: { id: spaceId } },
+  });
+  if (sameUsernameInSpace) {
+    const err = new Error(
+      "This usetname is already taken in this space. Choose another one."
+    );
+    return next(err);
+  }
+  req.session.username = username;
   res.redirect(`/${req.body.spaceId}`);
+};
+
+const testUsername = (username, res, next) => {
+  if (
+    username === null ||
+    !/^[a-zA-Z0-9]+$/.test(username) ||
+    username.length < 3
+  ) {
+    const err = new Error(
+      "Username must be at least 3 characters long and " +
+        "contain only letters and numbers"
+    );
+    return next(err);
+  }
+  return true;
 };
 
 export { space, getCreateSpace, getUserLobby, postUserLobby, postCreateSpace };
