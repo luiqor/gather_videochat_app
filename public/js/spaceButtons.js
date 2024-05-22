@@ -1,10 +1,11 @@
 import { addVideoStream } from "./mediaStream.js";
+import { sendMessage } from "./spaceHelpers.js";
 let isSharingScreen = false;
 let isRecording = false;
 let videoSharing;
 let mediaRecorder;
 
-export const createSendButton = (inputMssg) => {
+export const createSendButton = (inputMssg, socket) => {
   let container = document.querySelector(".space-chat__input-container");
   if (inputMssg.value !== "") {
     if (!container.querySelector(".accent-button")) {
@@ -20,7 +21,7 @@ export const createSendButton = (inputMssg) => {
       container.appendChild(button);
 
       button.addEventListener("click", () => {
-        sendMessage();
+        sendMessage(inputMssg, socket);
         container.removeChild(button);
       });
     }
@@ -166,15 +167,12 @@ export const recordSpace = async () => {
 };
 
 const combineStreamMic = (stream, micStream) => {
-  // Create a new MediaStream
   let combinedStream = new MediaStream();
 
-  // Add the video track from the screen stream
   stream.getVideoTracks().forEach((track) => {
     combinedStream.addTrack(track);
   });
 
-  // Add the audio track from the microphone stream
   micStream.getAudioTracks().forEach((track) => {
     combinedStream.addTrack(track);
   });
@@ -185,7 +183,6 @@ const combineStreamMic = (stream, micStream) => {
 };
 
 const createRecorder = async (stream, mimeType) => {
-  // the stream data is stored in this array
   let recordedChunks = [];
 
   const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -210,7 +207,7 @@ const createRecorder = async (stream, mimeType) => {
       }
     };
   });
-  mediaRecorder.start(200); // For every 200ms the stream data will be stored in a separate chunk.
+  mediaRecorder.start(200);
   return mediaRecorder;
 };
 
@@ -218,14 +215,15 @@ function saveFile(recordedChunks) {
   const blob = new Blob(recordedChunks, {
     type: "video/webm",
   });
-  let filename = window.prompt("Enter file name"),
-    downloadLink = document.createElement("a");
+  let date = new Date();
+  let filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+  downloadLink = document.createElement("a");
   downloadLink.href = URL.createObjectURL(blob);
   downloadLink.download = `${filename}.webm`;
 
   document.body.appendChild(downloadLink);
   downloadLink.click();
-  URL.revokeObjectURL(blob); // clear from memory
+  URL.revokeObjectURL(blob);
   document.body.removeChild(downloadLink);
 }
 

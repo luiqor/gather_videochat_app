@@ -22,12 +22,6 @@ export default class SocketService {
     });
 
     socket.on("message", async (message, spaceId, receiver) => {
-      console.log(
-        "Received message with SPACE_ID: ",
-        spaceId,
-        " to: ",
-        receiver
-      );
       const getSocketByUsername = async (username, spaceId) => {
         const socketSpace = await socketSpaceRepository.findOne({
           where: { username: username, space: { id: spaceId } },

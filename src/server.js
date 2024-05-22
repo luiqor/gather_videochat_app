@@ -85,23 +85,17 @@ AppDataSource.initialize()
   });
 
 cron.schedule(
+  // 45 18
   "0 0 * * *",
   async () => {
     console.log("running a task of deleting spaces");
     try {
-      const socketSpaceRepository = AppDataSource.getRepository(SocketSpace);
-
       const spaceRepository = AppDataSource.getRepository(Space);
       const now = new Date();
       const notNeededSpaces = await spaceRepository.find({
         where: [{ lastDate: LessThan(now) }, { lastDate: IsNull() }],
       });
-      for (const space of notNeededSpaces) {
-        const relatedEntities = await socketSpaceRepository.find({
-          where: { spaceId: space.id },
-        });
-        await socketSpaceRepository.remove(relatedEntities);
-      }
+      console.log("notNeededSpaces", notNeededSpaces);
       await spaceRepository.remove(notNeededSpaces);
     } catch (err) {
       console.error("Error deleting spaces:", err);

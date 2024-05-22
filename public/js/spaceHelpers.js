@@ -1,3 +1,5 @@
+const usersDropdown = document.getElementById("usernames-select");
+
 export const scrollToBottom = () => {
   let d = $(".space-chat__window");
   d.scrollTop(d.prop("scrollHeight"));
@@ -19,4 +21,15 @@ export const updateDropdown = (usernamesArray) => {
     option.text = username;
     usernamesSelect.appendChild(option);
   });
+};
+
+export const sendMessage = (inputMssg, socket) => {
+  const receiver = usersDropdown ? usersDropdown.value : undefined;
+  socket.emit(
+    "message",
+    inputMssg.value,
+    SPACE_ID,
+    receiver !== "" ? receiver : undefined
+  );
+  inputMssg.value = "";
 };

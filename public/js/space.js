@@ -1,6 +1,6 @@
 import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
 import { connectToNewUser } from "./peerConnection.js";
-import { scrollToBottom, updateDropdown } from "./spaceHelpers.js";
+import { scrollToBottom, updateDropdown, sendMessage } from "./spaceHelpers.js";
 import {
   createSendButton,
   muteMic,
@@ -11,7 +11,6 @@ import {
 const socket = io();
 const myVideo = document.createElement("video");
 let username;
-let peerId;
 
 updateDropdown(usernamesArray);
 myVideo.muted = true;
@@ -21,9 +20,10 @@ let peer = new Peer(undefined, {
   port: "8000",
 });
 
-let userCounter = 1;
 let myVideoStream;
 let currentPeers = [];
+let addedStreamIds = [];
+let userCounter = 0;
 let getUserMedia =
   navigator.getUserMedia ||
   navigator.webkitGetUserMedia ||
@@ -32,12 +32,7 @@ let getUserMedia =
 //VIDEO AND AUDIO TOGGLING OPTIONS
 getUserMediaStream().then((stream) => {
   myVideoStream = stream;
-  addVideoStream(
-    myVideo,
-    stream,
-    `${usernamesArray[0] == false ? `${USERNAME}` : usernamesArray[0]}`
-  );
-
+  addVideoStream(myVideo, stream, `🌌 Me ${username}`);
   peer.on("call", (call) => {
     call.answer(stream);
     const video = document.createElement("video");
@@ -49,23 +44,24 @@ getUserMediaStream().then((stream) => {
     }
 
     call.on("stream", (userVideoStream) => {
+      console.log(userVideoStream);
       addVideoStream(
         video,
         userVideoStream,
         isNotPresentation
-          ? usernamesArray[userCounter] == undefined
-            ? `${username}`
-            : usernamesArray[userCounter]
+          ? `${usernamesArray[userCounter]}`
           : call.metadata.videoTitle,
         !isNotPresentation ? call.metadata.placeholderId : false
       );
-      if (isNotPresentation) userCounter++;
+      console.log(usernamesArray[userCounter], "   ", userCounter);
+      console.log("Before increment:", userCounter);
+      if (!addedStreamIds.includes(userVideoStream.id)) {
+        addedStreamIds.push(userVideoStream.id);
+        userCounter++;
+      }
+      console.log("After increment:", userCounter);
+      console.log(currentPeers);
     });
-    if (!currentPeers.some((peer) => peer.peer === call.peer)) {
-      currentPeers.push(call);
-    }
-
-    console.log(currentPeers);
   });
 
   socket.on("user-connected", (peerId, username) => {
@@ -149,30 +145,20 @@ socket.on("user-disconnected", (peerId, usernameOfDisconnected) => {
     if (videoElement) {
       let video = videoElement.querySelector("video");
       video.srcObject = myVideoStream;
+      video.muted = true;
     }
   });
 });
 
 const inputMssg = document.getElementById("message-input");
-const usersDropdown = document.getElementById("usernames-select");
-const sendMessage = () => {
-  const receiver = usersDropdown ? usersDropdown.value : undefined;
-  socket.emit(
-    "message",
-    inputMssg.value,
-    SPACE_ID,
-    receiver !== "" ? receiver : undefined
-  );
-  inputMssg.value = "";
-};
 
 inputMssg.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
-    sendMessage();
+    sendMessage(inputMssg, socket);
   }
 });
 
-inputMssg.addEventListener("input", () => createSendButton(inputMssg));
+inputMssg.addEventListener("input", () => createSendButton(inputMssg, socket));
 
 document
   .getElementById("mute-button")
@@ -192,6 +178,5 @@ document
   .addEventListener("click", () => recordSpace());
 
 document.getElementById("leave-space-button").addEventListener("click", () => {
-  if (confirm(`Are you sure you want to leave space ${SPACE_ID}?`))
-    window.close();
+  window.location.href = "/";
 });
