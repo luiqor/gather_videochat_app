@@ -216,14 +216,14 @@ function saveFile(recordedChunks) {
     type: "video/webm",
   });
   let date = new Date();
-  let filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-  downloadLink = document.createElement("a");
+  let filename = date.toISOString().replace(/:/g, "-");
+  let downloadLink = document.createElement("a");
   downloadLink.href = URL.createObjectURL(blob);
   downloadLink.download = `${filename}.webm`;
 
   document.body.appendChild(downloadLink);
   downloadLink.click();
-  URL.revokeObjectURL(blob);
+  URL.revokeObjectURL(blob); // clear from memory
   document.body.removeChild(downloadLink);
 }
 
