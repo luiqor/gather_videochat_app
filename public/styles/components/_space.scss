@@ -1,5 +1,6 @@
 @import "../variables.scss";
 .space-chat {
+  padding: 0px;
   display: flex;
   height: 100vh;
   &__videochat-container {
@@ -35,7 +36,7 @@
   &__window {
     flex-grow: 1;
     overflow-y: scroll;
-    button &::-webkit-scrollbar {
+    &::-webkit-scrollbar {
       display: none;
     }
   }

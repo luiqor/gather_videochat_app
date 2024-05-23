@@ -1,4 +1,5 @@
 .space-chat {
+  padding: 0px;
   display: flex;
   height: 100vh;
 }
@@ -33,7 +34,7 @@
   flex-grow: 1;
   overflow-y: scroll;
 }
-button .space-chat__window::-webkit-scrollbar {
+.space-chat__window::-webkit-scrollbar {
   display: none;
 }
 .space-chat__select-container {

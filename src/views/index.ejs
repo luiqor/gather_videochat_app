@@ -1,32 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/main.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    />
+    <%- include ('partials/head.ejs') %>
+    <title>GatherSpace | index</title>
     <script>
       const SPACE_ID = "<%= spaceId %>";
       const spaceAlreadyExists = "<%= spaceAlreadyExists %>";
     </script>
-    <title>Index</title>
   </head>
   <body>
-    <header>
-      <div class="header-container">
-        <div class="header-content">
-          <a href="/"
-            ><img
-              src="/assets/icons/gather-space.svg"
-              alt="gather space galaxy"
-            />GatherSpace</a
-          >
-        </div>
-      </div>
-    </header>
+    <%- include ('partials/header.ejs') %>
     <main>
       <section class="space-title">
         <div class="space-title__inner-container landing-container">
@@ -108,13 +91,7 @@
         </div>
       </section>
     </main>
-    <footer>
-      <div class="footer-container">
-        <div class="footer-content">
-          <a href="https://github.com/luiqor">2024 by @luiqor</a>
-        </div>
-      </div>
-    </footer>
+    <%- include ('partials/footer.ejs') %>
     <script type="module" src="/js/index.js"></script>
   </body>
 </html>
