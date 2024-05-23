@@ -113,7 +113,7 @@ export const shareScreen = async (currentPeers, username, peer, socket) => {
 const callPeerPresentation = (peer, currentPeer, stream, username) => {
   const call = peer.call(currentPeer.peer, stream, {
     metadata: {
-      videoTitle: `${username} stream`,
+      videoTitle: `${username}'s stream`,
       placeholderId: `peer-${username}-presentation`,
       type: "presentation",
     },

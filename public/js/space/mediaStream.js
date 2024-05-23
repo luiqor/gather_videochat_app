@@ -1,6 +1,3 @@
-const videoGrid = $("#video-grid");
-
-// Keep track of processed streams
 const processedStreams = new Set();
 
 export const addVideoStream = (
@@ -36,6 +33,7 @@ const createVideoPlaceholder = (
   videoPlaceholder,
   videoPlaceholderId
 ) => {
+  const videoGrid = document.getElementById("video-grid");
   const userTitle = document.createElement("p");
   userTitle.className = "video-user-title";
   if (username) userTitle.textContent = `${username}`;

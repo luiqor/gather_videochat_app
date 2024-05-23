@@ -1,5 +1,3 @@
-const usersDropdown = document.getElementById("usernames-select");
-
 export const scrollToBottom = () => {
   let d = $(".space-chat__window");
   d.scrollTop(d.prop("scrollHeight"));
@@ -24,6 +22,7 @@ export const updateDropdown = (usernamesArray) => {
 };
 
 export const sendMessage = (inputMssg, socket) => {
+  const usersDropdown = document.getElementById("usernames-select");
   const receiver = usersDropdown ? usersDropdown.value : undefined;
   socket.emit(
     "message",

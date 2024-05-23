@@ -5,8 +5,8 @@ import {
   getUserLobby,
   postUserLobby,
   postCreateSpace,
-} from "../controller/gatherspaceController.js";
-import { index } from "../controller/mainController.js";
+} from "../controller/gatherspace_controller.js";
+import { index } from "../controller/main_controller.js";
 import createError from "http-errors";
 
 const route = express.Router();

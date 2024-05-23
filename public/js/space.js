@@ -1,25 +1,19 @@
-import { addVideoStream, getUserMediaStream } from "./mediaStream.js";
-import { connectToNewUser } from "./peerConnection.js";
-import { scrollToBottom, updateDropdown, sendMessage } from "./spaceHelpers.js";
+import { addVideoStream, getUserMediaStream } from "./space/mediaStream.js";
+import { connectToNewUser } from "./space/peerConnection.js";
+import {
+  scrollToBottom,
+  updateDropdown,
+  sendMessage,
+} from "./space/spaceHelpers.js";
 import {
   createSendButton,
   muteMic,
   stopVideo,
   shareScreen,
   recordSpace,
-} from "./spaceButtons.js";
+} from "./space/spaceButtons.js";
+
 const socket = io();
-const myVideo = document.createElement("video");
-let username;
-
-updateDropdown(usernamesArray);
-myVideo.muted = true;
-let peer = new Peer(undefined, {
-  path: "/peerjs",
-  host: "/",
-  port: "8000",
-});
-
 let myVideoStream;
 let currentPeers = [];
 let addedStreamIds = [];
@@ -29,10 +23,19 @@ let getUserMedia =
   navigator.webkitGetUserMedia ||
   navigator.mozGetUserMedia;
 
+updateDropdown(usernamesArray);
+let peer = new Peer(undefined, {
+  path: "/peerjs",
+  host: "/",
+  port: "8000",
+});
+
 //VIDEO AND AUDIO TOGGLING OPTIONS
 getUserMediaStream().then((stream) => {
   myVideoStream = stream;
-  addVideoStream(myVideo, stream, `🌌 Me ${username}`);
+  let myVideo = document.createElement("video");
+  myVideo.muted = true;
+  addVideoStream(myVideo, stream, `🌌 Me ${USERNAME}`);
   peer.on("call", (call) => {
     call.answer(stream);
     const video = document.createElement("video");
@@ -79,7 +82,6 @@ socket.on("create-message", (message, username, isPrivate) => {
 });
 
 socket.on("connect", () => {
-  username = USERNAME;
   setTimeout(() => {
     socket.emit("initialize-user", USERNAME, SPACE_ID);
   }, 2000);
@@ -141,7 +143,7 @@ socket.on("user-disconnected", (peerId, usernameOfDisconnected) => {
 
   // After removing the video element of the disconnected user, force a refresh of the video elements of the remaining users
   currentPeers.forEach((call) => {
-    let videoElement = document.getElementById(`video-placeholder-${username}`);
+    let videoElement = document.getElementById(`video-placeholder-${USERNAME}`);
     if (videoElement) {
       let video = videoElement.querySelector("video");
       video.srcObject = myVideoStream;
@@ -170,7 +172,7 @@ document
 document
   .getElementById("share-screen-button")
   .addEventListener("click", () =>
-    shareScreen(currentPeers, username, peer, socket)
+    shareScreen(currentPeers, USERNAME, peer, socket)
   );
 
 document
