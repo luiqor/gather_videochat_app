@@ -27,15 +27,15 @@ The application, built completly with JavaScript, follows the MVC (Model-View-Co
 ### Features Preview
 Space creation
 
-https://github.com/luiqor/gather_videochat_app/assets/141519826/4802091f-fefa-4b10-9e30-e1a6f670be45
+https://github.com/luiqor/gather_videochat_app/assets/141519826/2667fa15-0595-4e2f-9422-a5fc3685cfef
 
 Private and public chatting
 
-https://github.com/luiqor/gather_videochat_app/assets/141519826/2f56e8f3-77e0-4ebf-933a-e37c1fee00b2
+https://github.com/luiqor/gather_videochat_app/assets/141519826/ff02b463-8e49-44ad-b704-1cfa12c81ce9
 
-Disabling video
+Group conference
 
-https://github.com/luiqor/gather_videochat_app/assets/141519826/5a25a64d-a477-422c-9d9a-329c17e5e2c1
+https://github.com/luiqor/gather_videochat_app/assets/141519826/2b79ab98-0ed7-47da-baf8-4a47a3729a59
 
 Recording saving to downloads
 
