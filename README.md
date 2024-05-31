@@ -25,6 +25,7 @@ The application, built completly with JavaScript, follows the MVC (Model-View-Co
 <img src="https://img.shields.io/badge/peerjs webrtc-%23FF4747.svg?&style=for-the-badge&logo=webrtc&logoColor=white" />
 
 ### Features Preview
+
 Space creation
 
 https://github.com/luiqor/gather_videochat_app/assets/141519826/2667fa15-0595-4e2f-9422-a5fc3685cfef
@@ -49,9 +50,6 @@ Screensharing
 
 https://github.com/luiqor/gather_videochat_app/assets/141519826/355bfecf-7af7-4b8b-9a34-193da75e9b00
 
-
-
-
 ### Setting Up the Development Environment
 
 Follow these steps to set up and run the development version of the application:
@@ -66,9 +64,10 @@ Follow these steps to set up and run the development version of the application:
 
    ```bash
    PORT=3000
-   DB_TYPE=sqlite
-   DATABASE=gather.sqlite3
    SESSION_SECRET=your_secret_key
+   DB_TYPE=sqlite
+   DB_HOST=localhost
+   DB_NAME=db_development.sqlite3
    ```
 
    Feel free to modify these values to suit your needs.

@@ -22,12 +22,14 @@ export default new EntitySchema({
       type: "many-to-one",
       target: "Socket",
       inverseSide: "sockets_spaces",
+      onDelete: "CASCADE",
     },
     space: {
       type: "many-to-one",
       target: "Space",
       inverseSide: "sockets_spaces",
       eager: true,
+      onDelete: "CASCADE",
     },
   },
 });

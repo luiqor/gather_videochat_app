@@ -71,7 +71,9 @@ const postCreateSpace = async (req, res, next) => {
   let space = spaceRepository.create();
   space.id = spaceId;
   space.creator = username;
-  space.lastDate = req.body.date;
+  space.lastDate = req.body.date
+    ? req.body.date
+    : new Date(new Date().setDate(new Date().getDate() + 1));
   space = await spaceRepository.save(space);
 
   req.session.username = username;
